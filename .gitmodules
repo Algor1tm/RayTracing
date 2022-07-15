@@ -1,0 +1,9 @@
+[submodule "RayTracing/vendor/GLFW"]
+	path = RayTracing/vendor/GLFW
+	url = https://github.com/glfw/glfw.git
+[submodule "RayTracing/vendor/glm"]
+	path = RayTracing/vendor/glm
+	url = https://github.com/g-truc/glm.git
+[submodule "RayTracing/vendor/ImGui"]
+	path = RayTracing/vendor/ImGui
+	url = https://github.com/Userbug0/ImGui-CMake.git
