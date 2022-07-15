@@ -1,50 +1,40 @@
-﻿// RayTracing.cpp : Defines the entry point for the application.
-//
-
-#include "RayTracing.h"
-
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <glm/vec3.hpp>
-
-#include <ranges>
-
-#include <ImGui/imgui.cpp>
+﻿#include "Application.h"
 
 
-using namespace std;
-
-int main()
+class RayTracing : public Layer
 {
-	glm::vec3 v(1);
-	cout << "Hello CMake." << endl;
-
-	if (glfwInit())
+	void OnAttach()
 	{
-		std::cout << "GLFW Succesfully initialized\n";
+
 	}
 
-	GLFWwindow* window = glfwCreateWindow(800, 600, "RayTracing", NULL, NULL);
-	if (window == NULL)
+	void OnDetach()
 	{
-		cout << "Failed to create GLFW window" << endl;
-		glfwTerminate();
-		return -1;
+
 	}
 
-	glfwMakeContextCurrent(window);
-
-	int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-	if (status)
+	void OnImGuiRender()
 	{
-		std::cout << "glad Successfully initialized\n";
+
 	}
 
-	while (!glfwWindowShouldClose(window))
+	void OnUpdate(Time frameTime)
 	{
-		continue;
-	}
-	glfwTerminate();
 
-	return 0;
+	}
+};
+
+class RayTracingApplication : public Application
+{
+public:
+	RayTracingApplication()
+	{
+		PushLayer(new RayTracing());
+	}
+};
+
+
+Application* CreateApplication()
+{
+	return new RayTracingApplication();
 }
