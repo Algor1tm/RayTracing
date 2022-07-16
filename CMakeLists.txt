@@ -5,19 +5,22 @@ cmake_minimum_required (VERSION 3.16)
 
 project ("RayTracing")
 
+include_directories("RayTracing/src")
+
 # Add source to this project's executable.
 add_executable (RayTracing 
 "RayTracing/src/RayTracing.cpp"  
 "RayTracing/src/ImGui/ImGuiBuild.cpp" 
-"RayTracing/src/Application.cpp" 
-"RayTracing/src/Application.h" 
-"RayTracing/src/Main.cpp" 
-"RayTracing/src/Layer.h" 
-"RayTracing/src/Time.h" 
+"RayTracing/src/Core/Application.cpp" 
+"RayTracing/src/Core/Application.h" 
+"RayTracing/src/Core/Main.cpp" 
+"RayTracing/src/Core/Layer.h" 
+"RayTracing/src/Core/Time.h" 
 "RayTracing/src/ImGui/ImGuiLayer.h" 
 "RayTracing/src/ImGui/ImGuiLayer.cpp" 
-"RayTracing/src/Window.h" 
-"RayTracing/src/Window.cpp")
+"RayTracing/src/Core/Window.h" 
+"RayTracing/src/Core/Window.cpp" 
+"RayTracing/src/Core/Debug.h")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET RayTracing PROPERTY CXX_STANDARD 20)

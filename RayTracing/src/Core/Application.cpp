@@ -1,9 +1,8 @@
 #include "Application.h"
 #include "ImGui/ImGuiLayer.h"
+#include "Debug.h"
 
 #include <ImGui/imgui.h>
-
-#include <iostream>
 
 
 Application* Application::s_Instance = nullptr;
@@ -11,11 +10,8 @@ Application* Application::s_Instance = nullptr;
 Application::Application()
 	: m_Running(false)
 {
-	if (s_Instance != nullptr)
-	{
-		std::cout << "Application already exists!\n";
-		return;
-	}
+	ASSERT(!s_Instance, "Application already exists!\n");
+
 	s_Instance = this;
 
 	m_Window = std::make_unique<Window>(1280, 720);

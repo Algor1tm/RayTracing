@@ -1,4 +1,6 @@
-﻿#include "Application.h"
+﻿#include "Core/Application.h"
+
+#include "Core/Debug.h"
 
 
 class RayTracing : public Layer
