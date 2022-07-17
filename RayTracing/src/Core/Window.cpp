@@ -21,6 +21,7 @@ Window::Window(uint32_t width, uint32_t height, bool vsync)
 
 	m_Window = glfwCreateWindow(m_Width, m_Height, "RayTracing", NULL, NULL);
 	ASSERT(m_Window, "Failed to create GLFW window!\n");
+	glfwSetWindowPos(m_Window, 50, 60);
 
 	glfwMakeContextCurrent(m_Window);
 
