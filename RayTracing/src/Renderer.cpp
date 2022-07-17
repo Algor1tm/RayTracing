@@ -48,27 +48,40 @@ glm::vec4 Renderer::FragmentShader(glm::vec2 coord)
 	coord = coord * 2.f - 1.f;
 	coord.x *= (float)m_FinalImage->GetWidth() / (float)m_FinalImage->GetHeight();
 
-	glm::vec3 rayOrigin(0, 0, 2);
+	glm::vec3 lightDir(-0.5f, 0.75f, -1);
+	lightDir = glm::normalize(lightDir);
+
+	glm::vec3 rayOrigin(0);
 	glm::vec3 rayDirection(coord, -1.f);
 	rayDirection = glm::normalize(rayDirection);
 
+	glm::vec3 sphereCentre(0, 0, -2);
 	float radius = 0.5f;
 
-	// (bx^2 + by^2 + bz^2)t^2 + 2(axbx + ayby + azbz)t + (ax^2 + ay^2 + az^2 - r^2) = 0
+	// (bx^2 + by^2 + bz^2)t^2 + 2(axbx + ayby + azbz - Oxbx - Oyby - Ozbz)t + (ax^2 + ay^2 + az^2 + Ox^2 + Oy^2 + Oz^2 - r^2) = 0
 	// a - ray origin
 	// b - ray direction
-	// r - sphere radius
 	// t - hit distance
+	// O - shere centre
+	// r - sphere radius
 
 	// ax^2 + bx + c = 0
 	float a = glm::dot(rayDirection, rayDirection);
-	float b = 2 * glm::dot(rayOrigin, rayDirection);
-	float c = glm::dot(rayOrigin, rayOrigin) - radius * radius;
+	float b = 2 * (glm::dot(rayOrigin, rayDirection) - glm::dot(sphereCentre, rayDirection));
+	float c = glm::dot(rayOrigin, rayOrigin) + glm::dot(sphereCentre, sphereCentre) - radius * radius;
 	
 	float D = b * b - 4.f * a * c;
 
-	if (D >= 0)
-		return glm::vec4(1, 0, 1, 1);
+	if (D < 0)
+		return glm::vec4(0, 0, 0, 1);
 	
-	return glm::vec4(0, 0, 0, 1);
+	float tplus = (-b + std::sqrt(D)) / (2 * a);
+	float tminus = (-b - std::sqrt(D)) / (2 * a);
+	float t = std::min(tplus, tminus);
+	glm::vec3 hit = rayOrigin + rayDirection * t;
+
+	glm::vec3 sphereNormal = glm::normalize(hit - sphereCentre);
+	glm::vec3 color = glm::vec3(1, 1, 1) * glm::dot(-sphereNormal, lightDir);
+	color = glm::clamp(color, 0.f, 1.f);
+	return glm::vec4(color, 1);
 }
