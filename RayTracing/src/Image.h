@@ -20,11 +20,12 @@ public:
 	void Bind(uint32_t slot = 0) const;
 	void UnBind() const;
 
-	inline uint32_t GetWidth() { return m_Width; }
-	inline uint32_t GetHeight() { return m_Height; }
-	inline uint32_t GetTextureID() { return m_TextureID; }
+	inline uint32_t GetWidth() const { return m_Width; }
+	inline uint32_t GetHeight() const { return m_Height; }
+	inline uint32_t GetTextureID() const { return m_TextureID; }
 
 	void SetData(const void* data, uint32_t size);
+	void Resize(uint32_t newWidth, uint32_t newHeight);
 
 private:
 	uint32_t m_TextureID;

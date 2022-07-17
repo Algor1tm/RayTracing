@@ -73,10 +73,6 @@ void Application::Run()
 			// any change of dockspace/settings would lead to windows being stuck in limbo and never being visible.
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 			ImGui::Begin("DockSpace Demo", nullptr, window_flags);
-			ImGui::PopStyleVar();
-
-			ImGui::PopStyleVar(2);
-
 			// Submit the DockSpace
 			ImGuiIO& io = ImGui::GetIO();
 			if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
@@ -93,8 +89,9 @@ void Application::Run()
 					ImGui::EndMenuBar();
 				}
 			}
-
 			ImGui::End();
+			ImGui::PopStyleVar();
+			ImGui::PopStyleVar(2);
 		}
 
 		for (auto& layer : m_LayerStack)

@@ -20,7 +20,7 @@ add_executable (RayTracing
 "RayTracing/src/Core/Window.cpp" 
 "RayTracing/src/Core/Debug.h"
 "RayTracing/vendor/stb_image/stb_image.h"
-"RayTracing/vendor/stb_image/stb_image.cpp" "RayTracing/src/Image.h" "RayTracing/src/Image.cpp")
+"RayTracing/vendor/stb_image/stb_image.cpp" "RayTracing/src/Image.h" "RayTracing/src/Image.cpp" "RayTracing/src/Renderer.h" "RayTracing/src/Renderer.cpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET RayTracing PROPERTY CXX_STANDARD 20)

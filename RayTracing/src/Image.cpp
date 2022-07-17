@@ -46,8 +46,17 @@ Image::~Image()
 
 void Image::SetData(const void* data, uint32_t size)
 {
+	uint32_t bpp = m_DataFormat == GL_RGBA ? 4 : 3;
+	ASSERT(size == m_Width * m_Height * bpp, "Data must be entire texture!");
+
 	glBindTexture(GL_TEXTURE_2D, m_TextureID);
 	glTexImage2D(GL_TEXTURE_2D, 0, m_InternalFormat, m_Width, m_Height, 0, m_DataFormat, GL_UNSIGNED_BYTE, data);
+}
+
+void Image::Resize(uint32_t newWidth, uint32_t newHeight)
+{
+	m_Width = newWidth;
+	m_Height = newHeight;
 }
 
 void Image::Bind(uint32_t slot) const
