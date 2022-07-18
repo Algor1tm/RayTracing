@@ -10,7 +10,13 @@ class RayTracing : public Layer
 {
 	void OnAttach()
 	{
+		m_Scene = std::make_shared<Scene>();
 
+		m_Scene->Objects.push_back(std::make_shared<Sphere>(0.5f, glm::vec3(0, 0, -2)));
+
+		DirectionalLight light(glm::vec3(-0.5f, -0.75f, -1));
+		light.Direction = glm::normalize(light.Direction);
+		m_Scene->Light = light;
 	}
 
 	void OnDetach()
@@ -59,13 +65,13 @@ private:
 		Timer timer;
 
 		Renderer::OnResize(m_ViewportWidth, m_ViewportHeight);
-		Renderer::Render();
+		Renderer::Render(m_Scene);
 
 		m_LastRenderTime = timer.ElapsedTime();
 	}
 
 private:
-
+	std::shared_ptr<Scene> m_Scene;
 
 	uint32_t m_ViewportWidth = 0;
 	uint32_t m_ViewportHeight = 0;
