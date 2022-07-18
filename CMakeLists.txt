@@ -7,27 +7,25 @@ project ("RayTracing")
 
 # Add source to this project's executable.
 add_executable (RayTracing 
-"RayTracing/src/RayTracing.cpp"  
-"RayTracing/src/ImGui/ImGuiBuild.cpp" 
 "RayTracing/src/Core/Application.cpp" 
 "RayTracing/src/Core/Application.h" 
 "RayTracing/src/Core/Main.cpp" 
 "RayTracing/src/Core/Layer.h" 
 "RayTracing/src/Core/Time.h" 
-"RayTracing/src/ImGui/ImGuiLayer.h" 
-"RayTracing/src/ImGui/ImGuiLayer.cpp" 
 "RayTracing/src/Core/Window.h" 
 "RayTracing/src/Core/Window.cpp" 
 "RayTracing/src/Core/Debug.h"
+"RayTracing/src/ImGui/ImGuiBuild.cpp" 
+"RayTracing/src/ImGui/ImGuiLayer.h" 
+"RayTracing/src/ImGui/ImGuiLayer.cpp" 
+"RayTracing/src/RayTracing.cpp"  
 "RayTracing/src/Image.h" 
 "RayTracing/src/Image.cpp" 
 "RayTracing/src/Renderer.h" 
 "RayTracing/src/Renderer.cpp" 
 "RayTracing/src/Environment.h"
 "RayTracing/src/Environment.cpp"
-"RayTracing/src/Scene.h"
-"RayTracing/vendor/stb_image/stb_image.h"
-"RayTracing/vendor/stb_image/stb_image.cpp" )
+"RayTracing/src/Scene.h" )
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET RayTracing PROPERTY CXX_STANDARD 20)
