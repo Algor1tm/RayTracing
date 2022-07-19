@@ -26,8 +26,8 @@ void Renderer::Render(const std::shared_ptr<Scene>& scene)
 			uint32_t index = x + y * m_FinalImage->GetWidth();
 			glm::vec2 coord = { (float)x / (float)m_FinalImage->GetWidth(), (float)y / (float)m_FinalImage->GetHeight()};
 
-			coord = coord * 2.f - 1.f;
-			coord.x *= (float)m_FinalImage->GetWidth() / (float)m_FinalImage->GetHeight();
+			//coord = coord * 2.f - 1.f;
+			//coord.x *= (float)m_FinalImage->GetWidth() / (float)m_FinalImage->GetHeight();
 
 			m_ImageData[index] = RGBAtoHEX(FragmentShader(coord));
 		}
@@ -54,7 +54,7 @@ void Renderer::OnResize(uint32_t width, uint32_t height)
 
 glm::vec4 Renderer::FragmentShader(glm::vec2 coord)
 {
-	Ray ray(glm::vec3(coord, -1.f));
+	Ray ray = m_Scene->Camera.CastRay(coord);
 
 	glm::vec3 closestHit(Ray::MaxLength);
 	bool isHit = false;
@@ -63,9 +63,7 @@ glm::vec4 Renderer::FragmentShader(glm::vec2 coord)
 	{
 		glm::vec3 hit;
 		if (!object->Intersect(ray, hit))
-		{
 			continue;
-		}
 
 		if (hit.z < closestHit.z)
 		{

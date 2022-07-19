@@ -25,7 +25,11 @@ add_executable (RayTracing
 "RayTracing/src/Renderer.cpp" 
 "RayTracing/src/Environment.h"
 "RayTracing/src/Environment.cpp"
-"RayTracing/src/Scene.h" )
+"RayTracing/src/Scene.h"  
+"RayTracing/src/Random.h" 
+"RayTracing/src/Random.cpp"  
+"RayTracing/src/ProjectionCamera.h"
+"RayTracing/src/ProjectionCamera.cpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET RayTracing PROPERTY CXX_STANDARD 20)

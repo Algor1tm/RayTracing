@@ -1,6 +1,7 @@
 ﻿#include "Core/Application.h"
 #include "Core/Time.h"
 #include "Renderer.h"
+#include "Random.h"
 
 #include <glad/glad.h>
 #include <ImGui/imgui.h>
@@ -10,9 +11,23 @@ class RayTracing : public Layer
 {
 	void OnAttach()
 	{
-		m_Scene = std::make_shared<Scene>();
+		Random::Init();
 
-		m_Scene->Objects.push_back(std::make_shared<Sphere>(1.f, glm::vec3(0, 0, -5)));
+		CameraOrientation orientation;
+		orientation.Position = { 0, 0, 0 };
+		orientation.LookAt = { 0, 0, -1 };
+		orientation.Up = { 0, 1, 0 };
+
+		CameraProps properties;
+		properties.AspectRatio = 0; // viewport have not initialized yet
+		properties.FOV = glm::radians(45.f);
+		properties.FocusDist = glm::length(orientation.Position - orientation.LookAt);
+
+		ProjectionCamera camera(orientation, properties);
+
+		m_Scene = std::make_shared<Scene>(camera);
+
+		m_Scene->Objects.push_back(std::make_shared<Sphere>(0.5f, glm::vec3(0, 0, -5)));
 		m_Scene->Objects.push_back(std::make_shared<Plane>(glm::vec3(0, 1, 0)));
 
 		DirectionalLight light(glm::vec3(-0.5f, -0.75f, -1));
@@ -43,8 +58,14 @@ class RayTracing : public Layer
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {0, 0});
 		ImGui::Begin("Viewport");
 
-		m_ViewportWidth = (uint32_t)ImGui::GetContentRegionAvail().x;
-		m_ViewportHeight = (uint32_t)ImGui::GetContentRegionAvail().y;
+		uint32_t newWidth = (uint32_t)ImGui::GetContentRegionAvail().x;
+		uint32_t newHeight = (uint32_t)ImGui::GetContentRegionAvail().y;
+		if (newWidth != m_ViewportWidth || newHeight != m_ViewportHeight)
+		{
+			m_ViewportWidth = newWidth;
+			m_ViewportHeight = newHeight;
+			Resize();
+		}
 
 		auto& finalImage = Renderer::GetFinalImage();
 		if (finalImage != nullptr)
@@ -65,10 +86,15 @@ private:
 	{
 		Timer timer;
 
-		Renderer::OnResize(m_ViewportWidth, m_ViewportHeight);
 		Renderer::Render(m_Scene);
 
 		m_LastRenderTime = timer.ElapsedTime();
+	}
+
+	void Resize()
+	{
+		m_Scene->Camera.OnResize((float)m_ViewportWidth / (float)m_ViewportHeight);
+		Renderer::OnResize(m_ViewportWidth, m_ViewportHeight);
 	}
 
 private:
