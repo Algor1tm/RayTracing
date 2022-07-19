@@ -7,9 +7,9 @@ Sphere::Sphere(float radius, const glm::vec3& center)
 
 }
 
-bool Sphere::GetIntersectionPoint(const Ray& ray, glm::vec3& outPoint) const
+bool Sphere::Intersect(const Ray& ray, glm::vec3& outPoint) const
 {
-	// (bx^2 + by^2 + bz^2)t^2 + 2(axbx + ayby + azbz - Oxbx - Oyby - Ozbz)t + (ax^2 + ay^2 + az^2 + Ox^2 + Oy^2 + Oz^2 - r^2) = 0
+	// (bx^2 + by^2 + bz^2)t^2 + 2(axbx + ayby + azbz - Oxbx - Oyby - Ozbz)t + (a - O)^2 - r^2) = 0
 	// a - ray origin
 	// b - ray direction
 	// t - hit distance
@@ -18,21 +18,55 @@ bool Sphere::GetIntersectionPoint(const Ray& ray, glm::vec3& outPoint) const
 
 	// ax^2 + bx + c = 0
 	float a = glm::dot(ray.Direction, ray.Direction);
-	float b = 2 * (glm::dot(ray.Origin, ray.Direction) - glm::dot(m_Center, ray.Direction));
-	float c = glm::dot(ray.Origin, ray.Origin) + glm::dot(m_Center, m_Center) - m_Radius * m_Radius;
+	float half_b = glm::dot(ray.Direction, ray.Origin - m_Center);
+	float c = glm::dot(ray.Origin - m_Center, ray.Origin - m_Center) - m_Radius * m_Radius;
 
-	float D = b * b - 4.f * a * c;
+	float D = half_b * half_b - a * c;
 
 	if (D < 0)
 		return false;
 
-	float t = (-b - std::sqrt(D)) / (2 * a);
+	float sqrtD = glm::sqrt(D);
 
-	outPoint = ray.GetPoint(t);
+	float root = (-half_b - sqrtD) / a;
+	if (root <= Ray::MinLength || root >= Ray::MaxLength)
+	{
+		root = (-half_b + sqrtD) / a;
+		if (root <= Ray::MinLength || root >= Ray::MaxLength)
+			return false;
+	}
+
+	outPoint = ray.At(root);
 	return true;
 }
 
 glm::vec3 Sphere::GetNormal(const glm::vec3& surfacePoint) const
 {
 	return glm::normalize(surfacePoint - m_Center);
+}
+
+
+
+Plane::Plane(const glm::vec3& normal, const glm::vec3& point)
+	: m_Point(point)
+{
+	m_Normal = glm::normalize(normal);
+}
+
+bool Plane::Intersect(const Ray& ray, glm::vec3& outPoint) const
+{
+	float dot = glm::dot(ray.Direction, m_Normal);
+
+	if (dot > -0.001f)
+		return false;
+
+	float distance = glm::dot(m_Normal, (m_Point - ray.Origin)) / dot;
+
+	outPoint = ray.At(distance);
+	return true;
+}
+
+glm::vec3 Plane::GetNormal(const glm::vec3& surfacePoint) const
+{
+	return m_Normal;
 }

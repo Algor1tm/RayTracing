@@ -29,7 +29,7 @@ void Renderer::Render(const std::shared_ptr<Scene>& scene)
 			coord = coord * 2.f - 1.f;
 			coord.x *= (float)m_FinalImage->GetWidth() / (float)m_FinalImage->GetHeight();
 
-			m_ImageData[index] = RGBAtoHEX(FragmentShader(coord));;
+			m_ImageData[index] = RGBAtoHEX(FragmentShader(coord));
 		}
 	}
 
@@ -56,14 +56,33 @@ glm::vec4 Renderer::FragmentShader(glm::vec2 coord)
 {
 	Ray ray(glm::vec3(coord, -1.f));
 
-	glm::vec3 hit;
-	if (!m_Scene->Objects[0]->GetIntersectionPoint(ray, hit))
+	glm::vec3 closestHit(Ray::MaxLength);
+	bool isHit = false;
+	glm::vec3 color;
+	for (auto& object : m_Scene->Objects)
 	{
-		return glm::vec4(0, 0, 0, 1);
+		glm::vec3 hit;
+		if (!object->Intersect(ray, hit))
+		{
+			continue;
+		}
+
+		if (hit.z < closestHit.z)
+		{
+			closestHit = hit;
+
+			glm::vec3 normal = object->GetNormal(closestHit);
+			return glm::vec4(0.5f * (normal + 1.f), 1);
+			color = m_Scene->Light.GetColor(normal);
+			isHit = true;
+		}
 	}
 
-	glm::vec3 sphereNormal = m_Scene->Objects[0]->GetNormal(hit);
-	glm::vec3 color = m_Scene->Light.GetColor(sphereNormal);
+	if (!isHit)
+	{
+		glm::vec3 skyColor = glm::mix(glm::vec3(0.9f, 0.9f, 1.f), glm::vec3(0.5f, 0.7f, 1.f), 0.5f * (coord.y + 1));
+		return glm::vec4(skyColor, 1);
+	}
 
 	color = glm::clamp(color, 0.f, 1.f);
 	return glm::vec4(color, 1);

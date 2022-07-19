@@ -24,7 +24,7 @@ public:
 	inline uint32_t GetHeight() const { return m_Height; }
 	inline uint32_t GetTextureID() const { return m_TextureID; }
 
-	void SetData(const void* data, uint32_t size);
+	void SetData(const void* data, uint32_t sizeInBytes);
 	void Resize(uint32_t newWidth, uint32_t newHeight);
 
 private:

@@ -12,7 +12,8 @@ class RayTracing : public Layer
 	{
 		m_Scene = std::make_shared<Scene>();
 
-		m_Scene->Objects.push_back(std::make_shared<Sphere>(0.5f, glm::vec3(0, 0, -2)));
+		m_Scene->Objects.push_back(std::make_shared<Sphere>(1.f, glm::vec3(0, 0, -5)));
+		m_Scene->Objects.push_back(std::make_shared<Plane>(glm::vec3(0, 1, 0)));
 
 		DirectionalLight light(glm::vec3(-0.5f, -0.75f, -1));
 		light.Direction = glm::normalize(light.Direction);
