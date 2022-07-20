@@ -22,8 +22,8 @@ public:
 	glm::vec3 Origin;
 
 public:
-	static constexpr float MinLength = 0.01f;
-	static constexpr float MaxLength = 50.f;
+	static constexpr float MinLength = 0.001f;
+	static constexpr float MaxLength = 1000.f;
 };
 
 

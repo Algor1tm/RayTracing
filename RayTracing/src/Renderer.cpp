@@ -64,15 +64,31 @@ glm::vec4 Renderer::FragmentShader(glm::vec2 coord)
 {
 	Ray ray = m_Scene->Camera.CastRay(coord);
 	HitRecord record;
+	glm::vec3 color(1);
 
-	if (!m_Scene->Objects.ShootRay(ray, &record))
+	for (uint32_t i = 0; i < RendererProps::ChildRaysCount; ++i)
 	{
-		glm::vec3 skyColor = glm::mix(glm::vec3(0.9f, 0.9f, 1.f), glm::vec3(0.5f, 0.7f, 1.f), 0.5f * (coord.y + 1));
-		return glm::vec4(skyColor, 1);
+		if (m_Scene->Objects.ShootRay(ray, &record))
+		{
+			color *= 0.5f;
+
+			ray.Origin = record.Point;
+
+			glm::vec3 rand = Random::InUnitSphere();
+			rand = glm::dot(rand, record.Normal) > 0 ? rand : -rand;
+			ray.Direction = record.Normal + rand;
+
+			continue;
+		}
+
+		glm::vec3 skyColor = glm::mix(glm::vec3(1.f), glm::vec3(0.5f, 0.7f, 1.f), 0.5f * (coord.y + 1));
+		color *= skyColor;
+		color *= 0.5f;
+
+		color = glm::clamp(color, 0.f, 1.f);
+		color = glm::sqrt(color); // gamma correction
+		return glm::vec4(color, 1);
 	}
 
-	//glm::vec3 color = m_Scene->Light.GetColor(record.Normal);
-	glm::vec3 color = 0.5f * (record.Normal + 1.f);
-	color = glm::clamp(color, 0.f, 1.f);
-	return glm::vec4(color, 1);
+	return glm::vec4(0, 0, 0, 1);
 }

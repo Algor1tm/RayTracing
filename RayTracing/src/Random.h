@@ -2,6 +2,9 @@
 
 #include <random>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/random.hpp>
+
 
 class Random
 {
@@ -16,6 +19,21 @@ public:
 	static float Float()
 	{
 		return s_Distribution(s_RandomEngine);
+	}
+
+	static glm::vec3 Vec3()
+	{
+		return glm::vec3(Float(), Float(), Float());
+	}
+
+	static glm::vec3 Vec3(float min, float max)
+	{
+		return glm::vec3(Float() * (max - min) + min, Float() * (max - min) + min, Float() * (max - min) + min);
+	}
+
+	static glm::vec3 InUnitSphere()
+	{
+		return glm::sphericalRand(1.f);
 	}
 
 private:

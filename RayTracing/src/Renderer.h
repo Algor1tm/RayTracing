@@ -24,7 +24,8 @@ private:
 private:
 	struct RendererProps
 	{
-		static constexpr uint32_t SamplesPerPixel = 2;
+		static constexpr uint32_t SamplesPerPixel = 5;
+		static constexpr uint32_t ChildRaysCount = 8;
 	};
 
 private:

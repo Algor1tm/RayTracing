@@ -27,7 +27,7 @@ class RayTracing : public Layer
 
 		m_Scene = std::make_shared<Scene>(camera);
 
-		m_Scene->Objects.Add(std::make_shared<Plane>(glm::vec3(0, 1, 0), glm::vec3(0, -1, 0)));
+		m_Scene->Objects.Add(std::make_shared<Plane>(glm::vec3(0, 1, 0), glm::vec3(0, -0.5f, 0)));
 		m_Scene->Objects.Add(std::make_shared<Sphere>(0.5f, glm::vec3(0, 0, -5)));
 
 		DirectionalLight light(glm::vec3(-0.5f, -0.75f, -1));
