@@ -2,6 +2,9 @@
 
 #include <glm/glm.hpp>
 
+#include <memory>
+#include <vector>
+
 
 struct Ray
 {
@@ -23,6 +26,15 @@ public:
 	static constexpr float MaxLength = 50.f;
 };
 
+
+struct HitRecord
+{
+	glm::vec3 Point;
+	glm::vec3 Normal;
+	bool Inside;
+};
+
+
 struct DirectionalLight
 {
 public:
@@ -43,7 +55,7 @@ public:
 class GameObject
 {
 public:
-	virtual bool Intersect(const Ray& ray, glm::vec3& outPoint) const = 0;
+	virtual bool Intersect(const Ray& ray, float* distance) const = 0;
 	virtual glm::vec3 GetNormal(const glm::vec3& surfacePoint) const = 0;
 };
 
@@ -53,7 +65,7 @@ class Sphere : public GameObject
 public:
 	Sphere(float radius, const glm::vec3& center = glm::vec3(0));
 
-	bool Intersect(const Ray& ray, glm::vec3& outPoint) const override;
+	bool Intersect(const Ray& ray, float* distance) const override;
 	glm::vec3 GetNormal(const glm::vec3& surfacePoint) const override;
 
 	const glm::vec3& GetCenter() const { return m_Center; }
@@ -70,10 +82,36 @@ class Plane: public GameObject
 public:
 	Plane(const glm::vec3& normal, const glm::vec3& point = glm::vec3(0));
 
-	bool Intersect(const Ray& ray, glm::vec3& outPoint) const override;
+	bool Intersect(const Ray& ray, float* distance) const override;
 	glm::vec3 GetNormal(const glm::vec3& surfacePoint) const override;
 
 private:
 	glm::vec3 m_Normal;
 	glm::vec3 m_Point;
+};
+
+
+class GameObjectList
+{
+public:
+	using iterator = std::vector<std::shared_ptr<GameObject>>::iterator;
+	using const_iterator = std::vector<std::shared_ptr<GameObject>>::const_iterator;
+
+public:
+	GameObjectList() = default;
+
+	bool ShootRay(const Ray& ray, HitRecord* record);
+
+	std::shared_ptr<GameObject> operator[](size_t idx) const { return m_Objects[idx]; }
+	std::shared_ptr<GameObject>& operator[](size_t idx) { return m_Objects[idx]; }
+
+	const_iterator begin() const { return m_Objects.begin(); }
+	const_iterator end() const { return m_Objects.end(); }
+	iterator begin() { return m_Objects.begin(); }
+	iterator end() { return m_Objects.end(); }
+
+	void Add(const std::shared_ptr<GameObject>& object) { m_Objects.push_back(object); }
+
+private:
+	std::vector<std::shared_ptr<GameObject>> m_Objects;
 };

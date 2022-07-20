@@ -1,4 +1,5 @@
 #include "Renderer.h"
+#include "Random.h"
 
 
 static uint32_t RGBAtoHEX(const glm::vec4& color)
@@ -8,6 +9,7 @@ static uint32_t RGBAtoHEX(const glm::vec4& color)
 		((uint32_t(color.g * 255) & 0xff) << 8) +
 		((uint32_t(color.r * 255)) & 0xff);
 }
+
 
 std::unique_ptr<Image> Renderer::m_FinalImage = nullptr;
 std::vector<uint32_t> Renderer::m_ImageData = {};
@@ -19,17 +21,23 @@ void Renderer::Render(const std::shared_ptr<Scene>& scene)
 {
 	m_Scene = scene;
 
-	for (uint32_t y = 0; y < m_FinalImage->GetHeight(); ++y)
+	for (uint32_t y = m_FinalImage->GetHeight() - 1; y > 0; --y)
 	{
 		for (uint32_t x = 0; x < m_FinalImage->GetWidth(); ++x)
 		{
 			uint32_t index = x + y * m_FinalImage->GetWidth();
-			glm::vec2 coord = { (float)x / (float)m_FinalImage->GetWidth(), (float)y / (float)m_FinalImage->GetHeight()};
+			glm::vec4 color(0);
 
-			//coord = coord * 2.f - 1.f;
-			//coord.x *= (float)m_FinalImage->GetWidth() / (float)m_FinalImage->GetHeight();
+			for (uint32_t i = 0; i < RendererProps::SamplesPerPixel; ++i)
+			{
+				glm::vec2 coord = { 
+					((float)x + Random::Float()) / (float)m_FinalImage->GetWidth(), 
+					((float)y + Random::Float()) / (float)m_FinalImage->GetHeight() };
+				color += FragmentShader(coord);
+			}
 
-			m_ImageData[index] = RGBAtoHEX(FragmentShader(coord));
+			color /= RendererProps::SamplesPerPixel;
+			m_ImageData[index] = RGBAtoHEX(color);
 		}
 	}
 
@@ -55,33 +63,16 @@ void Renderer::OnResize(uint32_t width, uint32_t height)
 glm::vec4 Renderer::FragmentShader(glm::vec2 coord)
 {
 	Ray ray = m_Scene->Camera.CastRay(coord);
+	HitRecord record;
 
-	glm::vec3 closestHit(Ray::MaxLength);
-	bool isHit = false;
-	glm::vec3 color;
-	for (auto& object : m_Scene->Objects)
-	{
-		glm::vec3 hit;
-		if (!object->Intersect(ray, hit))
-			continue;
-
-		if (hit.z < closestHit.z)
-		{
-			closestHit = hit;
-
-			glm::vec3 normal = object->GetNormal(closestHit);
-			return glm::vec4(0.5f * (normal + 1.f), 1);
-			color = m_Scene->Light.GetColor(normal);
-			isHit = true;
-		}
-	}
-
-	if (!isHit)
+	if (!m_Scene->Objects.ShootRay(ray, &record))
 	{
 		glm::vec3 skyColor = glm::mix(glm::vec3(0.9f, 0.9f, 1.f), glm::vec3(0.5f, 0.7f, 1.f), 0.5f * (coord.y + 1));
 		return glm::vec4(skyColor, 1);
 	}
 
+	//glm::vec3 color = m_Scene->Light.GetColor(record.Normal);
+	glm::vec3 color = 0.5f * (record.Normal + 1.f);
 	color = glm::clamp(color, 0.f, 1.f);
 	return glm::vec4(color, 1);
 }

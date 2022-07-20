@@ -28,7 +28,7 @@ public:
 
 private:
 	glm::vec3 m_Position;
-	glm::vec3 m_HorizontalVec;
+	glm::vec3 m_HorizontalDir;
 	CameraProps m_Properties;
 
 	glm::vec3 m_Horizontal;

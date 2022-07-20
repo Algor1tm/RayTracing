@@ -7,13 +7,17 @@ ProjectionCamera::ProjectionCamera(const CameraOrientation& orientation, const C
 	float viewportHeight = 2.f * glm::tan(m_Properties.FOV / 2);
 	float viewportWidth = viewportHeight * m_Properties.AspectRatio;
 
-	glm::vec3 lookVec = glm::normalize(m_Position - orientation.LookAt);
-	m_HorizontalVec = glm::normalize(glm::cross(orientation.Up, lookVec));
-	glm::vec3 verticalVec = glm::cross(lookVec, m_HorizontalVec);
+	//glm::vec3 lookDir = glm::normalize(m_Position - orientation.LookAt);
+	//m_HorizontalDir = glm::normalize(glm::cross(orientation.Up, lookDir));
+	//glm::vec3 verticalDir = glm::cross(lookDir, m_HorizontalDir);
 
-	m_Horizontal = m_HorizontalVec * m_Properties.FocusDist * viewportWidth;
-	m_Vertical = verticalVec * m_Properties.FocusDist * viewportHeight;
-	m_LowerLeftCorner = m_Position - m_Horizontal / 2.f - m_Vertical / 2.f - m_Properties.FocusDist * lookVec;
+	//m_Horizontal = m_HorizontalDir * m_Properties.FocusDist * viewportWidth;
+	//m_Vertical = verticalDir * m_Properties.FocusDist * viewportHeight;
+	//m_LowerLeftCorner = m_Position - m_Horizontal / 2.f - m_Vertical / 2.f - m_Properties.FocusDist * lookDir;
+
+	m_Horizontal = glm::vec3(viewportWidth, 0, 0);
+	m_Vertical = glm::vec3(0, viewportHeight, 0);
+	m_LowerLeftCorner = m_Position - m_Horizontal / 2.f - m_Vertical / 2.f - glm::vec3(0, 0, 1.f);
 }
 
 Ray ProjectionCamera::CastRay(glm::vec2 uv)
@@ -30,7 +34,8 @@ void ProjectionCamera::OnResize(float aspectRatio)
 
 	m_LowerLeftCorner += m_Horizontal / 2.f;
 
-	m_Horizontal = m_HorizontalVec * m_Properties.FocusDist * viewportWidth;
+	//m_Horizontal = m_HorizontalDir * m_Properties.FocusDist * viewportWidth;
+	m_Horizontal = glm::vec3(viewportWidth, 0, 0);
 
 	m_LowerLeftCorner -= m_Horizontal / 2.f;
 }

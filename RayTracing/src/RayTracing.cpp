@@ -14,7 +14,7 @@ class RayTracing : public Layer
 		Random::Init();
 
 		CameraOrientation orientation;
-		orientation.Position = { 0, 0, 0 };
+		orientation.Position = { 0, 0, 1 };
 		orientation.LookAt = { 0, 0, -1 };
 		orientation.Up = { 0, 1, 0 };
 
@@ -27,8 +27,8 @@ class RayTracing : public Layer
 
 		m_Scene = std::make_shared<Scene>(camera);
 
-		m_Scene->Objects.push_back(std::make_shared<Sphere>(0.5f, glm::vec3(0, 0, -5)));
-		m_Scene->Objects.push_back(std::make_shared<Plane>(glm::vec3(0, 1, 0)));
+		m_Scene->Objects.Add(std::make_shared<Plane>(glm::vec3(0, 1, 0), glm::vec3(0, -1, 0)));
+		m_Scene->Objects.Add(std::make_shared<Sphere>(0.5f, glm::vec3(0, 0, -5)));
 
 		DirectionalLight light(glm::vec3(-0.5f, -0.75f, -1));
 		light.Direction = glm::normalize(light.Direction);
@@ -48,7 +48,7 @@ class RayTracing : public Layer
 	void OnImGuiRender()
 	{
 		ImGui::Begin("Settings");
-		ImGui::Text("Last Render: %.3fms", m_LastRenderTime.AsMilliseconds());
+		ImGui::Text("Render Time: %.3fms", m_LastRenderTime.AsMilliseconds());
 		if (ImGui::Button("Render"))
 		{
 			Render();

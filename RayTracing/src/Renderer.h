@@ -22,6 +22,12 @@ private:
 	static glm::vec4 FragmentShader(glm::vec2 coord);
 
 private:
+	struct RendererProps
+	{
+		static constexpr uint32_t SamplesPerPixel = 2;
+	};
+
+private:
 	static std::unique_ptr<Image> m_FinalImage;
 	static std::vector<uint32_t> m_ImageData;
 

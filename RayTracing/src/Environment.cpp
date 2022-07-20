@@ -7,7 +7,7 @@ Sphere::Sphere(float radius, const glm::vec3& center)
 
 }
 
-bool Sphere::Intersect(const Ray& ray, glm::vec3& outPoint) const
+bool Sphere::Intersect(const Ray& ray, float* distance) const
 {
 	// (bx^2 + by^2 + bz^2)t^2 + 2(axbx + ayby + azbz - Oxbx - Oyby - Ozbz)t + (a - O)^2 - r^2) = 0
 	// a - ray origin
@@ -36,7 +36,7 @@ bool Sphere::Intersect(const Ray& ray, glm::vec3& outPoint) const
 			return false;
 	}
 
-	outPoint = ray.At(root);
+	*distance = root;
 	return true;
 }
 
@@ -53,20 +53,54 @@ Plane::Plane(const glm::vec3& normal, const glm::vec3& point)
 	m_Normal = glm::normalize(normal);
 }
 
-bool Plane::Intersect(const Ray& ray, glm::vec3& outPoint) const
+bool Plane::Intersect(const Ray& ray, float* distance) const
 {
 	float dot = glm::dot(ray.Direction, m_Normal);
 
 	if (dot > -0.001f)
 		return false;
 
-	float distance = glm::dot(m_Normal, (m_Point - ray.Origin)) / dot;
+	float result = glm::dot(m_Normal, (m_Point - ray.Origin)) / dot;
+	if (result < Ray::MinLength || result > Ray::MaxLength)
+		return false;
 
-	outPoint = ray.At(distance);
+	*distance = result;
 	return true;
 }
 
 glm::vec3 Plane::GetNormal(const glm::vec3& surfacePoint) const
 {
 	return m_Normal;
+}
+
+
+bool GameObjectList::ShootRay(const Ray& ray, HitRecord* record)
+{
+	float closestHit = Ray::MaxLength;
+	size_t ObjectIdx = -1;
+	for (size_t i = 0; i < m_Objects.size(); ++i)
+	{
+		float distance;
+		if (!m_Objects[i]->Intersect(ray, &distance))
+			continue;
+
+		if (distance < closestHit)
+		{
+			ObjectIdx = i;
+			closestHit = distance;
+		}
+	}
+
+	if (ObjectIdx == -1)
+		return false;
+
+	HitRecord& rec = *record;
+
+	rec.Point = ray.At(closestHit);
+	rec.Normal = m_Objects[ObjectIdx]->GetNormal(rec.Point);
+
+	float normalDotDir = glm::dot(rec.Normal, ray.Direction);
+	rec.Inside = normalDotDir > 0;
+
+	return true;
 }

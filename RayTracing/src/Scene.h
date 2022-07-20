@@ -3,9 +3,6 @@
 #include "Environment.h"
 #include "ProjectionCamera.h"
 
-#include <vector>
-#include <memory>
-
 
 struct Scene
 {
@@ -16,6 +13,6 @@ public:
 public:
 	ProjectionCamera Camera;
 
-	std::vector<std::shared_ptr<GameObject>> Objects;
+	GameObjectList Objects;
 	DirectionalLight Light;
 };
