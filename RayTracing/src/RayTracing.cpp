@@ -29,10 +29,15 @@ class RayTracing : public Layer
 		m_Scene = std::make_shared<Scene>(camera);
 
 		const auto& planeMaterial = std::make_shared<Lambertian>(glm::vec3(0.4f, 0.4f, 0.4f));
-		const auto& sphereMaterial = std::make_shared<Lambertian>(glm::vec3(0.7, 0.3, 0.3));
+		const auto& lambertianMaterial = std::make_shared<Lambertian>(glm::vec3(0.7f, 0.3f, 0.3f));
+		const auto& dielectricMaterial = std::make_shared<Dielectric>(1.5f);
+		const auto& metalMaterial = std::make_shared<Metal>(glm::vec3(0.8f, 0.8f, 0.2f));
 
-		m_Scene->Objects.Add(std::make_shared<Plane>(glm::vec3(0, 1, 0), glm::vec3(0, -0.51f, 0), planeMaterial));
-		m_Scene->Objects.Add(std::make_shared<Sphere>(0.5f, glm::vec3(0, 0, -2), sphereMaterial));
+		//m_Scene->Objects.Add(std::make_shared<Plane>(glm::vec3(0, 1, 0), glm::vec3(0, -0.51f, 0), planeMaterial));
+		m_Scene->Objects.Add(std::make_shared<Sphere>(100.f, glm::vec3(0, -100.45f, 0), planeMaterial));
+		m_Scene->Objects.Add(std::make_shared<Sphere>(0.5f, glm::vec3(-0.5f, -0.05f, -5), lambertianMaterial));
+		m_Scene->Objects.Add(std::make_shared<Sphere>(0.5f, glm::vec3(1.f, 0, -3), metalMaterial));
+		m_Scene->Objects.Add(std::make_shared<Sphere>(0.5f, glm::vec3(-0.1f, 0, -3), dielectricMaterial));
 
 		DirectionalLight light(glm::vec3(-0.5f, -0.75f, -1));
 		light.Direction = glm::normalize(light.Direction);

@@ -101,6 +101,7 @@ bool GameObjectList::ShootRay(const Ray& ray, HitRecord* record)
 
 	float normalDotDir = glm::dot(rec.Normal, ray.Direction);
 	rec.Inside = normalDotDir > 0;
+	rec.Normal = rec.Inside ? -rec.Normal : rec.Normal;
 
 	rec.ObjectMaterial = m_Objects[ObjectIdx]->GetMaterial();
 
