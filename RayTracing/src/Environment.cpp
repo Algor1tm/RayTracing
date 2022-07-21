@@ -1,15 +1,15 @@
 #include "Environment.h"
 
 
-Sphere::Sphere(float radius, const glm::vec3& center)
-	: m_Radius(radius), m_Center(center)
+Sphere::Sphere(float radius, const glm::vec3& center, const std::shared_ptr<Material>& material)
+	: m_Radius(radius), m_Center(center), m_Material(material)
 {
 
 }
 
 bool Sphere::Intersect(const Ray& ray, float* distance) const
 {
-	// (bx^2 + by^2 + bz^2)t^2 + 2(axbx + ayby + azbz - Oxbx - Oyby - Ozbz)t + (a - O)^2 - r^2) = 0
+	// (bx^2 + by^2 + bz^2)t^2 + 2(b * (a - O))t + (a - O)^2 - r^2) = 0
 	// a - ray origin
 	// b - ray direction
 	// t - hit distance
@@ -47,8 +47,8 @@ glm::vec3 Sphere::GetNormal(const glm::vec3& surfacePoint) const
 
 
 
-Plane::Plane(const glm::vec3& normal, const glm::vec3& point)
-	: m_Point(point)
+Plane::Plane(const glm::vec3& normal, const glm::vec3& point, const std::shared_ptr<Material>& material)
+	: m_Point(point), m_Material(material)
 {
 	m_Normal = glm::normalize(normal);
 }
@@ -101,6 +101,8 @@ bool GameObjectList::ShootRay(const Ray& ray, HitRecord* record)
 
 	float normalDotDir = glm::dot(rec.Normal, ray.Direction);
 	rec.Inside = normalDotDir > 0;
+
+	rec.ObjectMaterial = m_Objects[ObjectIdx]->GetMaterial();
 
 	return true;
 }

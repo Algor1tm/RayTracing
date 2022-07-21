@@ -33,7 +33,7 @@ public:
 
 	static glm::vec3 InUnitSphere()
 	{
-		return glm::sphericalRand(1.f);
+		return glm::normalize(Vec3(-1.f, 1.f));
 	}
 
 private:

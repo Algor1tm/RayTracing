@@ -2,6 +2,7 @@
 #include "Core/Time.h"
 #include "Renderer.h"
 #include "Random.h"
+#include "Material.h"
 
 #include <glad/glad.h>
 #include <ImGui/imgui.h>
@@ -27,8 +28,11 @@ class RayTracing : public Layer
 
 		m_Scene = std::make_shared<Scene>(camera);
 
-		m_Scene->Objects.Add(std::make_shared<Plane>(glm::vec3(0, 1, 0), glm::vec3(0, -0.5f, 0)));
-		m_Scene->Objects.Add(std::make_shared<Sphere>(0.5f, glm::vec3(0, 0, -5)));
+		const auto& planeMaterial = std::make_shared<Lambertian>(glm::vec3(0.4f, 0.4f, 0.4f));
+		const auto& sphereMaterial = std::make_shared<Lambertian>(glm::vec3(0.7, 0.3, 0.3));
+
+		m_Scene->Objects.Add(std::make_shared<Plane>(glm::vec3(0, 1, 0), glm::vec3(0, -0.51f, 0), planeMaterial));
+		m_Scene->Objects.Add(std::make_shared<Sphere>(0.5f, glm::vec3(0, 0, -2), sphereMaterial));
 
 		DirectionalLight light(glm::vec3(-0.5f, -0.75f, -1));
 		light.Direction = glm::normalize(light.Direction);

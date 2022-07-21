@@ -20,6 +20,7 @@ public:
 
 private:
 	static glm::vec4 FragmentShader(glm::vec2 coord);
+	static glm::vec4 PostProcess(const glm::vec3& color);
 
 private:
 	struct RendererProps

@@ -1,4 +1,5 @@
 #include "Renderer.h"
+#include "Material.h"
 #include "Random.h"
 
 
@@ -68,27 +69,28 @@ glm::vec4 Renderer::FragmentShader(glm::vec2 coord)
 
 	for (uint32_t i = 0; i < RendererProps::ChildRaysCount; ++i)
 	{
+		glm::vec3 attenuation;
 		if (m_Scene->Objects.ShootRay(ray, &record))
 		{
-			color *= 0.5f;
-
-			ray.Origin = record.Point;
-
-			glm::vec3 rand = Random::InUnitSphere();
-			rand = glm::dot(rand, record.Normal) > 0 ? rand : -rand;
-			ray.Direction = record.Normal + rand;
+			record.ObjectMaterial->Scatter(record, &ray, &attenuation);
+			color *= attenuation;
 
 			continue;
 		}
 
 		glm::vec3 skyColor = glm::mix(glm::vec3(1.f), glm::vec3(0.5f, 0.7f, 1.f), 0.5f * (coord.y + 1));
 		color *= skyColor;
-		color *= 0.5f;
 
-		color = glm::clamp(color, 0.f, 1.f);
-		color = glm::sqrt(color); // gamma correction
-		return glm::vec4(color, 1);
+		return PostProcess(color);
 	}
 
 	return glm::vec4(0, 0, 0, 1);
+}
+
+glm::vec4 Renderer::PostProcess(const glm::vec3& color)
+{
+	glm::vec3 result;
+	result = glm::clamp(color, 0.f, 1.f);
+	result = glm::sqrt(result); // gamma correction
+	return glm::vec4(color, 1);
 }
