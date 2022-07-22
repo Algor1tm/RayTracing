@@ -6,8 +6,8 @@
 struct CameraOrientation
 {
 	glm::vec3 Position;
-	glm::vec3 Up;
 	glm::vec3 LookAt;
+	glm::vec3 Up;
 };
 
 struct CameraProps
@@ -15,6 +15,7 @@ struct CameraProps
 	float FOV;
 	float AspectRatio;
 	float FocusDist;
+	float LensRadius;
 };
 
 
@@ -28,10 +29,11 @@ public:
 
 private:
 	glm::vec3 m_Position;
-	glm::vec3 m_HorizontalDir;
 	CameraProps m_Properties;
 
+	glm::vec3 m_HorizontalDir;
 	glm::vec3 m_Horizontal;
 	glm::vec3 m_Vertical;
+	glm::vec3 m_VerticalDir;
 	glm::vec3 m_LowerLeftCorner;
 };

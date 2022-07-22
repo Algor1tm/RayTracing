@@ -1,9 +1,11 @@
 #pragma once
 
-#include <random>
+#include "Utils.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/random.hpp>
+
+#include <random>
 
 
 class Random
@@ -33,7 +35,23 @@ public:
 
 	static glm::vec3 InUnitSphere()
 	{
-		return glm::normalize(Vec3(-1.f, 1.f));
+		while (true)
+		{
+			glm::vec3 result = Vec3(-1.f, 1.f);
+			if (IsNearZero(result)) continue;
+			return glm::normalize(result);
+		}
+	}
+
+	static glm::vec3 InUnitDisk()
+	{
+		while (true)
+		{
+			glm::vec3 result = glm::vec3(Float() * 2.f - 1.f, Float() * 2.f - 1.f, 0.f);
+			if (glm::dot(result, result) >= 1.f)
+				continue;
+			return result;
+		}
 	}
 
 private:

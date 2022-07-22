@@ -7,12 +7,12 @@
 struct Scene
 {
 public:
+	Scene() = default;
+
 	Scene(const ProjectionCamera& camera)
-		: Light(glm::vec3(0, 0, -1)), Camera(camera) {}
+		: Camera(camera) {}
 
 public:
 	ProjectionCamera Camera;
-
 	GameObjectList Objects;
-	DirectionalLight Light;
 };

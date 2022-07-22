@@ -2,13 +2,6 @@
 #include "Random.h"
 
 
-static bool IsNearZero(const glm::vec3& vec)
-{
-	static constexpr float EPSILON = 1e-6f;
-	return glm::all(glm::lessThan(glm::abs(vec), glm::vec3(EPSILON)));
-}
-
-
 Lambertian::Lambertian(const glm::vec3& color)
 	: m_Albedo(color)
 {
@@ -64,14 +57,14 @@ bool Dielectric::Scatter(const HitRecord& record, Ray* ray, glm::vec3* attenuati
 	float refraction_ratio = record.Inside ? m_RefractionIndex : 1.f / m_RefractionIndex;
 
 	glm::vec3 unitDir = glm::normalize(rayRef.Direction);
-	float cos_theta = glm::min(glm::dot(-unitDir, record.Normal), 1.f);
+	float cos_theta = -glm::dot(unitDir, record.Normal);
 	float sin_theta = glm::sqrt(1.f - cos_theta * cos_theta);
 
-	bool cannot_refract = refraction_ratio * sin_theta > 1.0;
+	bool cannot_refract = refraction_ratio * sin_theta > 1.f;
 	if (cannot_refract || Reflectance(cos_theta, refraction_ratio) > Random::Float())
-		rayRef.Direction = glm::reflect(rayRef.Direction, record.Normal);
+		rayRef.Direction = glm::reflect(unitDir, record.Normal);
 	else
-		rayRef.Direction = glm::refract(rayRef.Direction, record.Normal, refraction_ratio);
+		rayRef.Direction = glm::refract(unitDir, record.Normal, refraction_ratio);
 
 	(*attenuation) = glm::vec3(1.f);
 	return true;

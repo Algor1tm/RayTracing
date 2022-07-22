@@ -38,24 +38,6 @@ struct HitRecord
 	std::shared_ptr<Material> ObjectMaterial;
 };
 
-
-struct DirectionalLight
-{
-public:
-	DirectionalLight(const glm::vec3& direction, const glm::vec3& color = glm::vec3(1))
-		: Direction(direction), Color(color) {}
-
-	inline glm::vec3 GetColor(const glm::vec3& normal)
-	{
-		return Color * glm::dot(-normal, Direction);
-	}
-
-public:
-	glm::vec3 Direction;
-	glm::vec3 Color;
-};
-
-
 class GameObject
 {
 public:

@@ -3,15 +3,6 @@
 #include "Random.h"
 
 
-static uint32_t RGBAtoHEX(const glm::vec4& color)
-{
-	return ((uint32_t(color.a * 255) & 0xff) << 24) +
-		((uint32_t(color.b * 255) & 0xff) << 16) +
-		((uint32_t(color.g * 255) & 0xff) << 8) +
-		((uint32_t(color.r * 255)) & 0xff);
-}
-
-
 std::unique_ptr<Image> Renderer::m_FinalImage = nullptr;
 std::vector<uint32_t> Renderer::m_ImageData = {};
 
@@ -82,10 +73,10 @@ glm::vec4 Renderer::FragmentShader(glm::vec2 coord)
 		glm::vec3 skyColor = glm::mix(glm::vec3(1.f), glm::vec3(0.5f, 0.7f, 1.f), 0.5f * (coord.y + 1));
 		color *= skyColor;
 
-		return PostProcess(color);
+		break;
 	}
 
-	return glm::vec4(0, 0, 0, 1);
+	return PostProcess(color);
 }
 
 glm::vec4 Renderer::PostProcess(const glm::vec3& color)

@@ -16,13 +16,14 @@ class RayTracing : public Layer
 
 		CameraOrientation orientation;
 		orientation.Position = { 0, 0, 1 };
-		orientation.LookAt = { 0, 0, -1 };
+		orientation.LookAt = { 0, 0, -3 };
 		orientation.Up = { 0, 1, 0 };
 
 		CameraProps properties;
 		properties.AspectRatio = 0; // viewport have not initialized yet
 		properties.FOV = glm::radians(45.f);
 		properties.FocusDist = glm::length(orientation.Position - orientation.LookAt);
+		properties.LensRadius = 0.f;
 
 		ProjectionCamera camera(orientation, properties);
 
@@ -35,13 +36,9 @@ class RayTracing : public Layer
 
 		//m_Scene->Objects.Add(std::make_shared<Plane>(glm::vec3(0, 1, 0), glm::vec3(0, -0.51f, 0), planeMaterial));
 		m_Scene->Objects.Add(std::make_shared<Sphere>(100.f, glm::vec3(0, -100.45f, 0), planeMaterial));
-		m_Scene->Objects.Add(std::make_shared<Sphere>(0.5f, glm::vec3(-0.5f, -0.05f, -5), lambertianMaterial));
+		m_Scene->Objects.Add(std::make_shared<Sphere>(0.5f, glm::vec3(0.f, -0.f, -3), lambertianMaterial));
 		m_Scene->Objects.Add(std::make_shared<Sphere>(0.5f, glm::vec3(1.f, 0, -3), metalMaterial));
-		m_Scene->Objects.Add(std::make_shared<Sphere>(0.5f, glm::vec3(-0.1f, 0, -3), dielectricMaterial));
-
-		DirectionalLight light(glm::vec3(-0.5f, -0.75f, -1));
-		light.Direction = glm::normalize(light.Direction);
-		m_Scene->Light = light;
+		m_Scene->Objects.Add(std::make_shared<Sphere>(0.5f, glm::vec3(-1.f, 0, -3), dielectricMaterial));
 	}
 
 	void OnDetach()

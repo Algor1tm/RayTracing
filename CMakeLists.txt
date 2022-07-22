@@ -18,7 +18,7 @@ add_executable (RayTracing
 "RayTracing/src/ImGui/ImGuiBuild.cpp" 
 "RayTracing/src/ImGui/ImGuiLayer.h" 
 "RayTracing/src/ImGui/ImGuiLayer.cpp" 
-"RayTracing/src/RayTracing.cpp"  
+"RayTracing/src/RayTracingApplication.cpp"  
 "RayTracing/src/Image.h" 
 "RayTracing/src/Image.cpp" 
 "RayTracing/src/Renderer.h" 
@@ -29,7 +29,10 @@ add_executable (RayTracing
 "RayTracing/src/Random.h" 
 "RayTracing/src/Random.cpp"  
 "RayTracing/src/ProjectionCamera.h"
-"RayTracing/src/ProjectionCamera.cpp" "RayTracing/src/Material.h" "RayTracing/src/Material.cpp")
+"RayTracing/src/ProjectionCamera.cpp" 
+"RayTracing/src/Material.h" 
+"RayTracing/src/Material.cpp"
+"RayTracing/src/Utils.h")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET RayTracing PROPERTY CXX_STANDARD 20)

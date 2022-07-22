@@ -77,7 +77,7 @@ glm::vec3 Plane::GetNormal(const glm::vec3& surfacePoint) const
 bool GameObjectList::ShootRay(const Ray& ray, HitRecord* record)
 {
 	float closestHit = Ray::MaxLength;
-	size_t ObjectIdx = -1;
+	size_t ObjectIdx = m_Objects.size();
 	for (size_t i = 0; i < m_Objects.size(); ++i)
 	{
 		float distance;
@@ -91,7 +91,7 @@ bool GameObjectList::ShootRay(const Ray& ray, HitRecord* record)
 		}
 	}
 
-	if (ObjectIdx == -1)
+	if (ObjectIdx == m_Objects.size())
 		return false;
 
 	HitRecord& rec = *record;
