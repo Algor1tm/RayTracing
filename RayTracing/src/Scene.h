@@ -12,6 +12,9 @@ public:
 	Scene(const ProjectionCamera& camera)
 		: Camera(camera) {}
 
+	void LoadSandBoxScene();
+	void LoadSceneSpheres();
+
 public:
 	ProjectionCamera Camera;
 	GameObjectList Objects;

@@ -2,6 +2,14 @@
 #include "Random.h"
 
 
+ProjectionCamera::ProjectionCamera()
+	: ProjectionCamera(
+		CameraOrientation({ 0.f, 0.f, 0.f }, { 0.f, 0.f, 1.f }, { 0.f, 1.f, 0.f }),
+		CameraProps({glm::radians(45.f), 16.f / 9.f, 1.f, 0.f}))
+{
+
+}
+
 ProjectionCamera::ProjectionCamera(const CameraOrientation& orientation, const CameraProps& props)
 	: m_Position(orientation.Position), m_Properties(props)
 {

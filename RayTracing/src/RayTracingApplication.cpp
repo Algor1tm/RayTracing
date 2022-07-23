@@ -14,35 +14,14 @@ class RayTracing : public Layer
 		Random::Init();
 
 		RendererProps props;
-		props.ChildRaysCount = 12;
-		props.SamplesPerPixel = 200;
-		props.ThreadsCount = 0.75f * std::thread::hardware_concurrency();
+		props.ChildRaysCount = 50;
+		props.SamplesPerPixel = 300;
+		props.ThreadsCount = std::thread::hardware_concurrency();
+
 		Renderer::Init(props);
 
-		CameraOrientation orientation;
-		orientation.Position = { 0, 0, 1 };
-		orientation.LookAt = { 0, 0, -3 };
-		orientation.Up = { 0, 1, 0 };
-
-		CameraProps properties;
-		properties.AspectRatio = 0; // viewport have not initialized yet
-		properties.FOV = glm::radians(45.f);
-		properties.FocusDist = glm::length(orientation.Position - orientation.LookAt);
-		properties.LensRadius = 0.f;
-
-		ProjectionCamera camera(orientation, properties);
-
-		m_Scene = std::make_shared<Scene>(camera);
-
-		const auto& planeMaterial = std::make_shared<Lambertian>(glm::vec3(0.4f, 0.4f, 0.4f));
-		const auto& lambertianMaterial = std::make_shared<Lambertian>(glm::vec3(0.7f, 0.3f, 0.3f));
-		const auto& dielectricMaterial = std::make_shared<Dielectric>(1.5f);
-		const auto& metalMaterial = std::make_shared<Metal>(glm::vec3(0.8f, 0.8f, 0.2f));
-
-		m_Scene->Objects.Add(std::make_shared<Sphere>(100.f, glm::vec3(0, -100.45f, 0), planeMaterial));
-		m_Scene->Objects.Add(std::make_shared<Sphere>(0.5f, glm::vec3(0.f, -0.f, -3), lambertianMaterial));
-		m_Scene->Objects.Add(std::make_shared<Sphere>(0.5f, glm::vec3(1.f, 0, -3), metalMaterial));
-		m_Scene->Objects.Add(std::make_shared<Sphere>(0.5f, glm::vec3(-1.f, 0, -3), dielectricMaterial));
+		m_Scene = std::make_shared<Scene>();
+		m_Scene->LoadSceneSpheres();
 	}
 
 	void OnDetach() override
@@ -54,7 +33,7 @@ class RayTracing : public Layer
 
 	void OnUpdate(Time frameTime) override
 	{
-
+		m_TimeToUpdate += frameTime.AsSeconds();
 	}
 
 	void OnImGuiRender() override
@@ -69,8 +48,11 @@ class RayTracing : public Layer
 		if (finalImage != nullptr)
 		{
 			// Upload image into the GPU must be on this thread
-			if(Renderer::GetCurrentState() == RendererState::Rendering)
+			if (m_TimeToUpdate - m_UpdateInterval > 0)
+			{
 				Renderer::UpdateImage();
+				m_TimeToUpdate = 0;
+			}
 
 			ImGui::Image(
 				(void*)(uint64_t)finalImage->GetTextureID(),
@@ -118,6 +100,9 @@ private:
 
 	uint32_t m_ViewportWidth = 0;
 	uint32_t m_ViewportHeight = 0;
+
+	float m_UpdateInterval = 0.05f;
+	float m_TimeToUpdate = 0;
 };
 
 

@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Core/Debug.h"
 
 #include <vector>
@@ -64,8 +66,8 @@ public:
 
 		// Add Task
 		{
-			std::unique_lock<std::mutex> lock(m_Mutex);
-			m_TaskQueue.emplace([task]() { (*task)(); });
+            std::unique_lock<std::mutex> lock(m_Mutex);
+            m_TaskQueue.emplace([task]() { (*task)(); });
 		}
 
 		// Force one thread to work
@@ -77,25 +79,25 @@ public:
 private:
 	void Work()
 	{
-		while (true)
-		{
-			std::function<void()> task;
-
-			// Wait for new task
-			{
-				std::unique_lock<std::mutex> lock(m_Mutex);
-				m_Notifier.wait(lock, [this]() {return !m_TaskQueue.empty() || m_Exit; });
-
-				if (m_Exit)
-					return;
-
-				task = std::move(m_TaskQueue.front());
-				m_TaskQueue.pop();
-			}
-
-			task();
-		}
-	}
+        while (true)
+        {
+            std::function<void()> task;
+            
+            // Wait for new task
+            {
+                std::unique_lock<std::mutex> lock(m_Mutex);
+                m_Notifier.wait(lock, [this]() {return !m_TaskQueue.empty() || m_Exit; });
+                
+                if (m_Exit)
+                	return;
+                
+                task = std::move(m_TaskQueue.front());
+                m_TaskQueue.pop();
+            }
+            
+            task();
+        }
+    }
 
 private:
 	std::vector<std::thread> m_Threads;

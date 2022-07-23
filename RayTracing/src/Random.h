@@ -18,36 +18,36 @@ public:
 		s_RandomEngine.seed(std::random_device()());
 	}
 
-	static float Float()
+	inline static float Float()
 	{
 		return s_Distribution(s_RandomEngine);
 	}
 
-	static glm::vec3 Vec3()
+	inline static float Float(float min, float max)
+	{
+		return Float() * (max - min) + min;
+	}
+
+	inline static glm::vec3 Vec3()
 	{
 		return glm::vec3(Float(), Float(), Float());
 	}
 
-	static glm::vec3 Vec3(float min, float max)
+	inline static glm::vec3 Vec3(float min, float max)
 	{
-		return glm::vec3(Float() * (max - min) + min, Float() * (max - min) + min, Float() * (max - min) + min);
+		return glm::vec3(Float(min, max), Float(min, max), Float(min, max));
 	}
 
-	static glm::vec3 InUnitSphere()
+	inline static glm::vec3 InUnitSphere()
+	{
+		return glm::normalize(Vec3(-1.f, 1.f));
+	}
+
+	inline static glm::vec3 InUnitDisk()
 	{
 		while (true)
 		{
-			glm::vec3 result = Vec3(-1.f, 1.f);
-			if (IsNearZero(result)) continue;
-			return glm::normalize(result);
-		}
-	}
-
-	static glm::vec3 InUnitDisk()
-	{
-		while (true)
-		{
-			glm::vec3 result = glm::vec3(Float() * 2.f - 1.f, Float() * 2.f - 1.f, 0.f);
+			glm::vec3 result = glm::vec3(Float(-1.f, 1.f), Float(-1.f, 1.f), 0.f);
 			if (glm::dot(result, result) >= 1.f)
 				continue;
 			return result;

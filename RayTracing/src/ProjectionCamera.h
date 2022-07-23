@@ -22,6 +22,7 @@ struct CameraProps
 class ProjectionCamera
 {
 public:
+	ProjectionCamera();
 	ProjectionCamera(const CameraOrientation& orientation, const CameraProps& props);
 
 	Ray CastRay(glm::vec2 uv);

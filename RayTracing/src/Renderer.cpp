@@ -107,6 +107,9 @@ glm::vec4 Renderer::FragmentShader(glm::vec2 coord)
 	HitRecord record;
 	glm::vec3 color(1);
 
+	constexpr glm::vec3 white(1.f);
+	constexpr glm::vec3 blue(0.5f, 0.7f, 1.f);
+
 	for (uint32_t i = 0; i < m_RendererProps.ChildRaysCount; ++i)
 	{
 		glm::vec3 attenuation;
@@ -119,7 +122,7 @@ glm::vec4 Renderer::FragmentShader(glm::vec2 coord)
 			continue;
 		}
 
-		glm::vec3 skyColor = glm::mix(glm::vec3(1.f), glm::vec3(0.5f, 0.7f, 1.f), 0.5f * (coord.y + 1));
+		glm::vec3 skyColor = glm::mix(white, blue, 0.5f * (coord.y + 1));
 		color *= skyColor;
 
 		break;

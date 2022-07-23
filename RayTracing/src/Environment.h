@@ -50,7 +50,7 @@ public:
 class Sphere : public GameObject
 {
 public:
-	Sphere(float radius, const glm::vec3& center, const std::shared_ptr<Material>& material);
+	Sphere(const glm::vec3& center, float radius, const std::shared_ptr<Material>& material);
 
 	bool Intersect(const Ray& ray, float* distance) const override;
 	glm::vec3 GetNormal(const glm::vec3& surfacePoint) const override;
@@ -63,23 +63,6 @@ public:
 private:
 	float m_Radius;
 	glm::vec3 m_Center;
-	std::shared_ptr<Material> m_Material;
-};
-
-
-class Plane: public GameObject
-{
-public:
-	Plane(const glm::vec3& normal, const glm::vec3& point, const std::shared_ptr<Material>& material);
-
-	bool Intersect(const Ray& ray, float* distance) const override;
-	glm::vec3 GetNormal(const glm::vec3& surfacePoint) const override;
-
-	const std::shared_ptr<Material>& GetMaterial() const override { return m_Material; }
-
-private:
-	glm::vec3 m_Normal;
-	glm::vec3 m_Point;
 	std::shared_ptr<Material> m_Material;
 };
 

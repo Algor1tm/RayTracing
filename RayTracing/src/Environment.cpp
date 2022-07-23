@@ -1,7 +1,7 @@
 #include "Environment.h"
 
 
-Sphere::Sphere(float radius, const glm::vec3& center, const std::shared_ptr<Material>& material)
+Sphere::Sphere(const glm::vec3& center, float radius, const std::shared_ptr<Material>& material)
 	: m_Radius(radius), m_Center(center), m_Material(material)
 {
 
@@ -43,34 +43,6 @@ bool Sphere::Intersect(const Ray& ray, float* distance) const
 glm::vec3 Sphere::GetNormal(const glm::vec3& surfacePoint) const
 {
 	return glm::normalize(surfacePoint - m_Center);
-}
-
-
-
-Plane::Plane(const glm::vec3& normal, const glm::vec3& point, const std::shared_ptr<Material>& material)
-	: m_Point(point), m_Material(material)
-{
-	m_Normal = glm::normalize(normal);
-}
-
-bool Plane::Intersect(const Ray& ray, float* distance) const
-{
-	float dot = glm::dot(ray.Direction, m_Normal);
-
-	if (dot > -0.001f)
-		return false;
-
-	float result = glm::dot(m_Normal, (m_Point - ray.Origin)) / dot;
-	if (result < Ray::MinLength || result > Ray::MaxLength)
-		return false;
-
-	*distance = result;
-	return true;
-}
-
-glm::vec3 Plane::GetNormal(const glm::vec3& surfacePoint) const
-{
-	return m_Normal;
 }
 
 
