@@ -32,7 +32,7 @@ add_executable (RayTracing
 "RayTracing/src/ProjectionCamera.cpp" 
 "RayTracing/src/Material.h" 
 "RayTracing/src/Material.cpp"
-"RayTracing/src/Utils.h")
+"RayTracing/src/Utils.h" "RayTracing/src/ThreadPool.h")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET RayTracing PROPERTY CXX_STANDARD 20)
