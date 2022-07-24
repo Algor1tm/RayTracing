@@ -4,8 +4,6 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include <Windows.h>
-
 
 static void GLFWErrorCallback(int error, const char* description)
 {
@@ -23,12 +21,6 @@ Window::Window(uint32_t width, uint32_t height, bool vsync)
 
 	m_Window = glfwCreateWindow(m_Width, m_Height, "RayTracing", NULL, NULL);
 	ASSERT(m_Window, "Failed to create GLFW window!\n");
-
-	// Make maximized window
-	RECT workArea;
-	SystemParametersInfo(SPI_GETWORKAREA, 0, &workArea, 0);
-	glfwSetWindowPos(m_Window, workArea.left, workArea.top);
-	glfwSetWindowSize(m_Window, workArea.right - workArea.left, workArea.bottom - workArea.top);
 
 	glfwMakeContextCurrent(m_Window);
 

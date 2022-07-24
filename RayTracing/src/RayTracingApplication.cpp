@@ -3,18 +3,31 @@
 #include "Random.h"
 #include "Material.h"
 
-#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include <ImGui/imgui.h>
+
+#include <Windows.h>
 
 
 class RayTracing : public Layer
 {
 	void OnAttach() override
 	{
+		// Make maximized window
+		GLFWwindow* window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
+		RECT workArea;
+		SystemParametersInfo(SPI_GETWORKAREA, 0, &workArea, 0);
+		glfwSetWindowPos(window, workArea.left, workArea.top);
+		glfwSetWindowSize(window, workArea.right - workArea.left, workArea.bottom - workArea.top);
+		
+		ImGuiIO& io = ImGui::GetIO(); (void)io;
+		io.IniFilename = NULL;
+		ImGui::LoadIniSettingsFromDisk("../../../../RayTracing/imgui.ini");
+
 		Random::Init();
 
 		RendererProps props;
-		props.ChildRaysCount = 50;
+		props.ChildRaysCount = 12;
 		props.SamplesPerPixel = 32;
 		props.ThreadsCount = std::thread::hardware_concurrency();
 		if (props.ThreadsCount > 1)
@@ -23,7 +36,7 @@ class RayTracing : public Layer
 		Renderer::Init(props);
 
 		m_Scene = std::make_shared<Scene>();
-		m_Scene->LoadSceneSpheres();
+		m_Scene->LoadSandBoxScene();
 	}
 
 	void OnDetach() override

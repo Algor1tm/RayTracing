@@ -35,3 +35,26 @@ add_executable (RayTracing
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET RayTracing PROPERTY CXX_STANDARD 20)
 endif()
+
+
+target_include_directories("RayTracing" PUBLIC "src" "vendor")
+
+#GLFW
+add_subdirectory("vendor/GLFW")
+target_include_directories("RayTracing" PUBLIC "vendor/GLFW/include")
+target_link_libraries("RayTracing" glfw)
+
+#glad
+add_subdirectory("vendor/glad")
+target_include_directories("RayTracing" PUBLIC "vendor/glad/include")
+target_link_libraries("RayTracing" glad)
+
+#glm
+add_subdirectory("vendor/glm")
+target_include_directories("RayTracing" PUBLIC "vendor/glm")
+target_link_libraries("RayTracing" glm)
+
+#ImGui
+add_subdirectory("vendor/ImGui")
+target_include_directories("RayTracing" PUBLIC "vendor/ImGui")
+target_link_libraries("RayTracing" ImGui)
