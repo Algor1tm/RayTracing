@@ -1,47 +1,12 @@
-﻿# CMakeList.txt : CMake project for RayTracing, include source and define
-# project specific logic here.
-#
-cmake_minimum_required (VERSION 3.16)
+﻿cmake_minimum_required (VERSION 3.16)
 
-project ("RayTracing")
+project("RayTracing")
 
-# Add source to this project's executable.
-add_executable (RayTracing 
-"RayTracing/src/Core/Application.cpp" 
-"RayTracing/src/Core/Application.h" 
-"RayTracing/src/Core/Main.cpp" 
-"RayTracing/src/Core/Layer.h" 
-"RayTracing/src/Core/Time.h" 
-"RayTracing/src/Core/Window.h" 
-"RayTracing/src/Core/Window.cpp" 
-"RayTracing/src/Core/Debug.h"
-"RayTracing/src/ImGui/ImGuiBuild.cpp" 
-"RayTracing/src/ImGui/ImGuiLayer.h" 
-"RayTracing/src/ImGui/ImGuiLayer.cpp" 
-"RayTracing/src/RayTracingApplication.cpp"  
-"RayTracing/src/Image.h" 
-"RayTracing/src/Image.cpp" 
-"RayTracing/src/Renderer.h" 
-"RayTracing/src/Renderer.cpp" 
-"RayTracing/src/Environment.h"
-"RayTracing/src/Environment.cpp"
-"RayTracing/src/Scene.h"  
-"RayTracing/src/Random.h" 
-"RayTracing/src/Random.cpp"  
-"RayTracing/src/ProjectionCamera.h"
-"RayTracing/src/ProjectionCamera.cpp" 
-"RayTracing/src/Material.h" 
-"RayTracing/src/Material.cpp"
-"RayTracing/src/Utils.h" 
-"RayTracing/src/ThreadPool.h"
-"RayTracing/src/Scene.cpp")
-
-if (CMAKE_VERSION VERSION_GREATER 3.12)
-  set_property(TARGET RayTracing PROPERTY CXX_STANDARD 20)
-endif()
-
+add_subdirectory("RayTracing")
 
 set(VENDOR "RayTracing/vendor")
+
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT "RayTracing")
 
 target_include_directories(${PROJECT_NAME} PUBLIC "RayTracing/src" "${VENDOR}")
 

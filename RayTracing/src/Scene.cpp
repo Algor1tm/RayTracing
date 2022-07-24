@@ -44,7 +44,7 @@ void Scene::LoadSceneSpheres()
     properties.AspectRatio = 16.f / 9.f;
     properties.FOV = glm::radians(20.f);
     properties.FocusDist = 10.f;
-    properties.LensRadius = 0.05f;
+    properties.LensRadius = 0.02f;
 
     Camera = ProjectionCamera(orientation, properties);
 

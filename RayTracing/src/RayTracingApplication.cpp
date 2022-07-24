@@ -15,8 +15,10 @@ class RayTracing : public Layer
 
 		RendererProps props;
 		props.ChildRaysCount = 50;
-		props.SamplesPerPixel = 300;
+		props.SamplesPerPixel = 32;
 		props.ThreadsCount = std::thread::hardware_concurrency();
+		if (props.ThreadsCount > 1)
+			props.ThreadsCount--;
 
 		Renderer::Init(props);
 
@@ -26,9 +28,10 @@ class RayTracing : public Layer
 
 	void OnDetach() override
 	{
+		// Renderer Shutdown must be first
+		Renderer::Shutdown();
 		if(m_RendererThread.joinable())
 			m_RendererThread.join();
-		Renderer::Shutdown();
 	}
 
 	void OnUpdate(Time frameTime) override
@@ -65,7 +68,7 @@ class RayTracing : public Layer
 		ImGui::PopStyleVar();
 
 		ImGui::Begin("Settings");
-		ImGui::Text("Render Time: %.3fms", Renderer::GetRenderTime().AsMilliseconds());
+		ImGui::Text("Render Time: %.3fs", Renderer::GetRenderTime().AsSeconds());
 		if (ImGui::Button("Render") && Renderer::GetCurrentState() == RendererState::Nothing)
 		{
 			if (newWidth != m_ViewportWidth || newHeight != m_ViewportHeight)

@@ -19,11 +19,14 @@ void Renderer::Init(const RendererProps& props)
 	m_RendererProps = props;
 	m_Pool.Init(m_RendererProps.ThreadsCount);
 	m_CurrentState = RendererState::Nothing;
-	m_RenderTime = Time::Milliseconds(0);
+	m_RenderTime = Time(0);
 }
 
 void Renderer::Shutdown()
 {
+	//Fast join all working threads
+	m_RendererProps.SamplesPerPixel = 0;
+
 	m_Pool.Shutdown();
 }
 
@@ -41,8 +44,8 @@ void Renderer::Render(const std::shared_ptr<Scene>& scene)
 
 	for (uint32_t i = 0; i < m_RendererProps.ThreadsCount; ++i)
 	{
-		uint32_t startRow = glm::ceil(float(i) * (float)(m_FinalImage->GetHeight() - 1) / (float)m_RendererProps.ThreadsCount);
-		// Do not Render last row(subscipt out_of_range)
+		uint32_t startRow = i * m_FinalImage->GetHeight() / m_RendererProps.ThreadsCount;
+		// Do not Render last row
 		uint32_t endRow =
 			glm::ceil(float(i + 1) * (float)(m_FinalImage->GetHeight() - 1) / (float)m_RendererProps.ThreadsCount);
 
