@@ -1,7 +1,7 @@
 #include "GameObject.h"
 
 
-bool GameObjectList::ShootRay(const Ray& ray, HitRecord& record)
+bool GameObjectList::Intersect(const Ray& ray, HitRecord& record) const
 {
 	HitRecord tmpRecord = record;
 	record.Distance = Ray::MaxLength;
@@ -18,4 +18,21 @@ bool GameObjectList::ShootRay(const Ray& ray, HitRecord& record)
 	}
 
 	return hitAnything;
+}
+
+bool GameObjectList::ConstructAABB(float time0, float time1, AABB& outputBox) const
+{
+	AABB result;
+	bool firstBox = true;
+
+	for (const auto& object : m_Objects)
+	{
+		if (!object->ConstructAABB(time0, time1, result))
+			return false;
+
+		firstBox ? outputBox = result : outputBox.Merge(result);
+		firstBox = false;
+	}
+
+	return true;
 }

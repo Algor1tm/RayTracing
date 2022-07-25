@@ -28,6 +28,11 @@ public:
 		return Float() * (max - min) + min;
 	}
 
+	inline static int Int(int min, int max)
+	{
+		return static_cast<int>(glm::round(Float(min, max)));
+	}
+
 	inline static glm::vec3 Vec3()
 	{
 		return glm::vec3(Float(), Float(), Float());

@@ -10,6 +10,7 @@ public:
 	Sphere(const glm::vec3& center, float radius, const std::shared_ptr<Material>& material);
 
 	bool Intersect(const Ray& ray, HitRecord& record) const override;
+	bool ConstructAABB(float time0, float time1, AABB& outputBox) const override;
 
 private:
 	glm::vec3 m_Center;
@@ -26,6 +27,7 @@ public:
 		float time1, float radius, const std::shared_ptr<Material>& material);
 
 	bool Intersect(const Ray& ray, HitRecord& record) const override;
+	bool ConstructAABB(float time0, float time1, AABB& outputBox) const override;
 
 private:
 	glm::vec3 GetCenter(float time) const;

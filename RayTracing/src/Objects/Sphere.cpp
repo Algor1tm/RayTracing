@@ -48,6 +48,12 @@ bool Sphere::Intersect(const Ray& ray, HitRecord& record) const
 	return true;
 }
 
+bool Sphere::ConstructAABB(float time0, float time1, AABB& outputBox) const
+{
+	outputBox = AABB(m_Center - glm::vec3(m_Radius), m_Center + glm::vec3(m_Radius));
+	return true;
+}
+
 
 MovingSphere::MovingSphere(const glm::vec3& center0, float time0, const glm::vec3& center1,
 	float time1, float radius, const std::shared_ptr<Material>& material)
@@ -86,6 +92,16 @@ bool MovingSphere::Intersect(const Ray& ray, HitRecord& record) const
 	record.ObjectMaterial = m_Material;
 
 	record.SetFaceNormal(ray);
+
+	return true;
+}
+
+bool MovingSphere::ConstructAABB(float time0, float time1, AABB& outputBox) const
+{
+	AABB box0 = AABB(GetCenter(time0) - glm::vec3(m_Radius), GetCenter(time0) + glm::vec3(m_Radius));
+	AABB box1 = AABB(GetCenter(time1) - glm::vec3(m_Radius), GetCenter(time1) + glm::vec3(m_Radius));
+
+	outputBox = box0.Merge(box1);
 
 	return true;
 }

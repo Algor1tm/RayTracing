@@ -30,10 +30,15 @@ add_executable (RayTracing
 "src/ThreadPool.h"
 "src/Scene.cpp" 
 "src/Objects/Sphere.h"
+"src/Objects/Sphere.cpp"
 "src/Objects/GameObject.h"
 "src/Objects/GameObject.cpp" 
-"src/Objects/Sphere.cpp"
-"src/Objects/Ray.h")
+"src/Objects/Ray.h"
+"src/Objects/AABB.h" 
+"src/Objects/AABB.cpp" 
+"src/Objects/BVH.h"
+"src/Objects/BVH.cpp"
+)
 
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)

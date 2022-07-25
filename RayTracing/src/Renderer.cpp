@@ -116,7 +116,7 @@ glm::vec4 Renderer::FragmentShader(glm::vec2 coord)
 	for (uint32_t i = 0; i < m_RendererProps.ChildRaysCount; ++i)
 	{
 		glm::vec3 attenuation;
-		if (m_Scene->Objects.ShootRay(ray, record))
+		if (m_Scene->Objects.Intersect(ray, record))
 		{
 			if(!record.ObjectMaterial->Scatter(record, ray,attenuation))
 				return glm::vec4(0, 0, 0, 1);
