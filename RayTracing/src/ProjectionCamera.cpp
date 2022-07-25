@@ -10,8 +10,8 @@ ProjectionCamera::ProjectionCamera()
 
 }
 
-ProjectionCamera::ProjectionCamera(const CameraOrientation& orientation, const CameraProps& props)
-	: m_Position(orientation.Position), m_Properties(props)
+ProjectionCamera::ProjectionCamera(const CameraOrientation& orientation, const CameraProps& props, float time0, float time1)
+	: m_Position(orientation.Position), m_Properties(props), m_Time0(time0), m_Time1(time1)
 {
 	float viewportHeight = 2.f * glm::tan(m_Properties.FOV / 2);
 	float viewportWidth = viewportHeight * m_Properties.AspectRatio;
@@ -38,7 +38,10 @@ Ray ProjectionCamera::CastRay(glm::vec2 uv)
 		offset = glm::vec3(0.f);
 	}
 
-	return Ray( m_LowerLeftCorner + uv.x * m_Horizontal + uv.y * m_Vertical - m_Position - offset, m_Position + offset);
+	return Ray(
+		m_LowerLeftCorner + uv.x * m_Horizontal + uv.y * m_Vertical - m_Position - offset, 
+		m_Position + offset,
+		Random::Float(m_Time0, m_Time1));
 }
 
 void ProjectionCamera::OnResize(float aspectRatio)

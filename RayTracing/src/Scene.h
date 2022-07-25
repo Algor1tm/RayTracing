@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Environment.h"
+#include "Objects/GameObject.h"
 #include "ProjectionCamera.h"
 
 

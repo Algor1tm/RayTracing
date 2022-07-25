@@ -1,4 +1,4 @@
-#include "Environment.h"
+#include "Objects/Ray.h"
 
 #include <glm/glm.hpp>
 
@@ -23,7 +23,7 @@ class ProjectionCamera
 {
 public:
 	ProjectionCamera();
-	ProjectionCamera(const CameraOrientation& orientation, const CameraProps& props);
+	ProjectionCamera(const CameraOrientation& orientation, const CameraProps& props, float time0 = 0, float time1 = 0);
 
 	Ray CastRay(glm::vec2 uv);
 	void OnResize(float aspectRatio);
@@ -37,4 +37,7 @@ private:
 	glm::vec3 m_Vertical;
 	glm::vec3 m_VerticalDir;
 	glm::vec3 m_LowerLeftCorner;
+
+	float m_Time0;
+	float m_Time1;
 };

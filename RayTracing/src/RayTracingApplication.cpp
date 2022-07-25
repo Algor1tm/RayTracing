@@ -1,7 +1,6 @@
 ﻿#include "Core/Application.h"
 #include "Renderer.h"
 #include "Random.h"
-#include "Material.h"
 
 #include <GLFW/glfw3.h>
 #include <ImGui/imgui.h>
@@ -28,10 +27,8 @@ class RayTracing : public Layer
 
 		RendererProps props;
 		props.ChildRaysCount = 12;
-		props.SamplesPerPixel = 32;
-		props.ThreadsCount = std::thread::hardware_concurrency();
-		if (props.ThreadsCount > 1)
-			props.ThreadsCount--;
+		props.SamplesPerPixel = 100;
+		props.ThreadsCount = 5;//std::thread::hardware_concurrency();
 
 		Renderer::Init(props);
 

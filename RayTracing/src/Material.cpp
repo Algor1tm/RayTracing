@@ -8,17 +8,16 @@ Lambertian::Lambertian(const glm::vec3& color)
 
 }
 
-bool Lambertian::Scatter(const HitRecord& record, Ray* ray, glm::vec3* attenuation)
+bool Lambertian::Scatter(const HitRecord& record, Ray& ray, glm::vec3& attenuation)
 {
-	Ray& rayRef = *ray;
-	rayRef.Origin = record.Point;
+	ray.Origin = record.Point;
 		
-	rayRef.Direction = record.Normal + Random::InUnitSphere();;
+	ray.Direction = record.Normal + Random::InUnitSphere();;
 
-	if (IsNearZero(rayRef.Direction))
-		rayRef.Direction = record.Normal;
+	if (IsNearZero(ray.Direction))
+		ray.Direction = record.Normal;
 
-	(*attenuation) = m_Albedo;
+	attenuation = m_Albedo;
 	return true;
 }
 
@@ -29,17 +28,16 @@ Metal::Metal(const glm::vec3& color, float fuzziness)
 	
 }
 
-bool Metal::Scatter(const HitRecord& record, Ray* ray, glm::vec3* attenuation)
+bool Metal::Scatter(const HitRecord& record, Ray& ray, glm::vec3& attenuation)
 {
-	Ray& rayRef = *ray;
-	rayRef.Origin = record.Point;
+	ray.Origin = record.Point;
 
-	rayRef.Direction = glm::reflect(rayRef.Direction, record.Normal);
+	ray.Direction = glm::reflect(ray.Direction, record.Normal);
 	if(m_Fuzziness != 0)
-		rayRef.Direction += m_Fuzziness * Random::InUnitSphere();
+		ray.Direction += m_Fuzziness * Random::InUnitSphere();
 
-	(*attenuation) = m_Albedo;
-	return glm::dot(rayRef.Direction, record.Normal) > 0;
+	attenuation = m_Albedo;
+	return glm::dot(ray.Direction, record.Normal) > 0;
 }
 
 
@@ -49,24 +47,25 @@ Dielectric::Dielectric(float refractionIndex)
 
 }
 
-bool Dielectric::Scatter(const HitRecord& record, Ray* ray, glm::vec3* attenuation)
+bool Dielectric::Scatter(const HitRecord& record, Ray& ray, glm::vec3& attenuation)
 {
-	Ray& rayRef = *ray;
-	rayRef.Origin = record.Point;
+	constexpr glm::vec3 white(1.f);
+
+	ray.Origin = record.Point;
 
 	float refraction_ratio = record.Inside ? m_RefractionIndex : 1.f / m_RefractionIndex;
 
-	glm::vec3 unitDir = glm::normalize(rayRef.Direction);
+	glm::vec3 unitDir = glm::normalize(ray.Direction);
 	float cos_theta = -glm::dot(unitDir, record.Normal);
 	float sin_theta = glm::sqrt(1.f - cos_theta * cos_theta);
 
 	bool cannot_refract = refraction_ratio * sin_theta > 1.f;
 	if (cannot_refract || Reflectance(cos_theta, refraction_ratio) > Random::Float())
-		rayRef.Direction = glm::reflect(unitDir, record.Normal);
+		ray.Direction = glm::reflect(unitDir, record.Normal);
 	else
-		rayRef.Direction = glm::refract(unitDir, record.Normal, refraction_ratio);
+		ray.Direction = glm::refract(unitDir, record.Normal, refraction_ratio);
 
-	(*attenuation) = glm::vec3(1.f);
+	attenuation = white;
 	return true;
 }
 

@@ -19,8 +19,6 @@ add_executable (RayTracing
 "src/Image.cpp" 
 "src/Renderer.h" 
 "src/Renderer.cpp" 
-"src/Environment.h"
-"src/Environment.cpp"
 "src/Scene.h"  
 "src/Random.h" 
 "src/Random.cpp"  
@@ -30,14 +28,20 @@ add_executable (RayTracing
 "src/Material.cpp"
 "src/Utils.h" 
 "src/ThreadPool.h"
-"src/Scene.cpp")
+"src/Scene.cpp" 
+"src/Objects/Sphere.h"
+"src/Objects/GameObject.h"
+"src/Objects/GameObject.cpp" 
+"src/Objects/Sphere.cpp"
+"src/Objects/Ray.h")
+
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET RayTracing PROPERTY CXX_STANDARD 20)
 endif()
 
 
-target_include_directories("RayTracing" PUBLIC "src" "vendor")
+target_include_directories(RayTracing PUBLIC "src" "vendor")
 
 #GLFW
 add_subdirectory("vendor/GLFW")
