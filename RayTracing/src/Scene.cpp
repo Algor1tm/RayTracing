@@ -1,6 +1,7 @@
 #include "Scene.h"
 
 #include "Objects/Sphere.h"
+#include "Objects/BVH.h"
 #include "Material.h"
 #include "Random.h"
 
@@ -26,11 +27,14 @@ void Scene::LoadSandBoxScene()
     const auto& dielectricMaterial = std::make_shared<Dielectric>(1.5f);
     const auto& metalMaterial = std::make_shared<Metal>(glm::vec3(0.8f, 0.8f, 0.2f));
 
-    Objects.Add(std::make_shared<Sphere>(glm::vec3(0, -100.45f, 0), 100.f, planeMaterial));
-    Objects.Add(std::make_shared<MovingSphere>(glm::vec3(0.f, 0.1f, -3), 0.f, glm::vec3(0.f, -0.1f, -3), 1.f, 0.25f, lambertianMaterial));
-    //Objects.Add(std::make_shared<Sphere>(glm::vec3(0.f, -0.f, -3), 0.5f, lambertianMaterial));
-    Objects.Add(std::make_shared<Sphere>(glm::vec3(1.f, 0, -3), 0.5f, metalMaterial));
-    //Objects.Add(std::make_shared<Sphere>(glm::vec3(-1.f, 0, -3), 0.5f, dielectricMaterial));
+    std::vector<std::shared_ptr<GameObject>> objects;
+
+    objects.push_back(std::make_shared<Sphere>(glm::vec3(0, -100.45f, 0), 100.f, planeMaterial));
+    //objects.push_back(std::make_shared<MovingSphere>(glm::vec3(0.f, 0.1f, -3), 0.f, glm::vec3(0.f, -0.1f, -3), 1.f, 0.25f, lambertianMaterial));
+    objects.push_back(std::make_shared<Sphere>(glm::vec3(1.f, 0, -3), 0.5f, metalMaterial));
+    objects.push_back(std::make_shared<Sphere>(glm::vec3(0.f, -0.f, -3), 0.5f, lambertianMaterial));
+    objects.push_back(std::make_shared<Sphere>(glm::vec3(-1.f, 0, -3), 0.5f, dielectricMaterial));
+    Objects.Add(std::make_shared<BVHNode>(objects, 0, objects.size(), 0.f, 1.f));
 }
 
 

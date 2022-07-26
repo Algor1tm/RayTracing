@@ -11,7 +11,7 @@
 class GameObject
 {
 public:
-	virtual bool Intersect(const Ray& ray, HitRecord& record) const = 0;
+	virtual bool Intersect(const Ray& ray, float minLength, float maxLength, HitRecord& record) const = 0;
 	virtual bool ConstructAABB(float time0, float time1, AABB& outputBox) const = 0;
 };
 
@@ -25,7 +25,7 @@ public:
 public:
 	GameObjectList() = default;
 
-	bool Intersect(const Ray& ray, HitRecord& record) const override;
+	bool Intersect(const Ray& ray, float minLength, float maxLength, HitRecord& record) const override;
 	bool ConstructAABB(float time0, float time1, AABB& outputBox) const override;
 
 	void Add(const std::shared_ptr<GameObject>& object) { m_Objects.push_back(object); }

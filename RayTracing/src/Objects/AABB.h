@@ -10,7 +10,7 @@ public:
 	AABB() = default;
 	AABB(const glm::vec3& min, const glm::vec3& max);
 
-	bool Intersect(const Ray& ray) const;
+	bool Intersect(const Ray& ray, float minLength, float maxLength) const;
 	
 	AABB& Merge(const AABB& other);
 

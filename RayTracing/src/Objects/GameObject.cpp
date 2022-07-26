@@ -1,19 +1,16 @@
 #include "GameObject.h"
 
 
-bool GameObjectList::Intersect(const Ray& ray, HitRecord& record) const
+bool GameObjectList::Intersect(const Ray& ray, float minLength, float maxLength, HitRecord& record) const
 {
-	HitRecord tmpRecord = record;
-	record.Distance = Ray::MaxLength;
+	record.Distance = maxLength;
 	bool hitAnything = false;
 
 	for (size_t i = 0; i < m_Objects.size(); ++i)
 	{
-		if (m_Objects[i]->Intersect(ray, tmpRecord))
+		if (m_Objects[i]->Intersect(ray, minLength, record.Distance, record))
 		{
 			hitAnything = true;
-			if (tmpRecord.Distance < record.Distance)
-				record = tmpRecord;
 		}
 	}
 

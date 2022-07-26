@@ -7,7 +7,7 @@ Sphere::Sphere(const glm::vec3& center, float radius, const std::shared_ptr<Mate
 
 }
 
-bool Sphere::Intersect(const Ray& ray, HitRecord& record) const
+bool Sphere::Intersect(const Ray& ray, float minLength, float maxLength, HitRecord& record) const
 {
 	// (bx^2 + by^2 + bz^2)t^2 + 2(b * (a - O))t + (a - O)^2 - r^2) = 0
 	// a - ray origin
@@ -31,10 +31,10 @@ bool Sphere::Intersect(const Ray& ray, HitRecord& record) const
 	float sqrtD = glm::sqrt(D);
 
 	float root = (-half_b - sqrtD) / a;
-	if (root <= Ray::MinLength || root >= Ray::MaxLength)
+	if (root <= minLength || root >= maxLength)
 	{
 		root = (-half_b + sqrtD) / a;
-		if (root <= Ray::MinLength || root >= Ray::MaxLength)
+		if (root <= minLength || root >= maxLength)
 			return false;
 	}
 
@@ -63,7 +63,7 @@ MovingSphere::MovingSphere(const glm::vec3& center0, float time0, const glm::vec
 }
 
 
-bool MovingSphere::Intersect(const Ray& ray, HitRecord& record) const
+bool MovingSphere::Intersect(const Ray& ray, float minLength, float maxLength, HitRecord& record) const
 {
 	glm::vec3 originCenter = ray.Origin - GetCenter(ray.Time);
 
@@ -79,10 +79,10 @@ bool MovingSphere::Intersect(const Ray& ray, HitRecord& record) const
 	float sqrtD = glm::sqrt(D);
 
 	float root = (-half_b - sqrtD) / a;
-	if (root <= Ray::MinLength || root >= Ray::MaxLength)
+	if (root <= minLength || root >= maxLength)
 	{
 		root = (-half_b + sqrtD) / a;
-		if (root <= Ray::MinLength || root >= Ray::MaxLength)
+		if (root <= minLength || root >= maxLength)
 			return false;
 	}
 

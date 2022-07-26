@@ -9,7 +9,7 @@ class Sphere : public GameObject
 public:
 	Sphere(const glm::vec3& center, float radius, const std::shared_ptr<Material>& material);
 
-	bool Intersect(const Ray& ray, HitRecord& record) const override;
+	bool Intersect(const Ray& ray, float minLength, float maxLength, HitRecord& record) const override;
 	bool ConstructAABB(float time0, float time1, AABB& outputBox) const override;
 
 private:
@@ -26,7 +26,7 @@ public:
 	MovingSphere(const glm::vec3& center0, float time0, const glm::vec3& center1, 
 		float time1, float radius, const std::shared_ptr<Material>& material);
 
-	bool Intersect(const Ray& ray, HitRecord& record) const override;
+	bool Intersect(const Ray& ray, float minLength, float maxLength, HitRecord& record) const override;
 	bool ConstructAABB(float time0, float time1, AABB& outputBox) const override;
 
 private:

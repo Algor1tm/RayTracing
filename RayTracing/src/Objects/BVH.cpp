@@ -44,7 +44,7 @@ BVHNode::BVHNode(const std::vector<std::shared_ptr<GameObject>>& objects, size_t
 {
 	uint8_t axis = Random::Int(0, 2);
 	auto comparator =
-		(axis == 0) ? BoxCompareX
+		  (axis == 0) ? BoxCompareX
 		: (axis == 1) ? BoxCompareY
 		: BoxCompareZ;
 
@@ -52,7 +52,6 @@ BVHNode::BVHNode(const std::vector<std::shared_ptr<GameObject>>& objects, size_t
 	if (objectsCount == 1)
 	{
 		m_Left = m_Right = objects[start];
-		return;
 	}
 	else if (objectsCount == 2)
 	{
@@ -71,7 +70,7 @@ BVHNode::BVHNode(const std::vector<std::shared_ptr<GameObject>>& objects, size_t
 	{
 		auto tmpObjects = objects;
 
-		std::sort(tmpObjects.begin() + start, tmpObjects.end() + end, comparator);
+		std::sort(tmpObjects.begin() + start, tmpObjects.begin() + end, comparator);
 
 		size_t mid = start + objectsCount / 2;
 		m_Left = std::make_shared<BVHNode>(tmpObjects, start, mid, time0, time1);
@@ -79,20 +78,21 @@ BVHNode::BVHNode(const std::vector<std::shared_ptr<GameObject>>& objects, size_t
 	}
 
 	AABB boxLeft, boxRight;
-	if (!m_Left->ConstructAABB(time0, time1, boxLeft) || m_Right->ConstructAABB(time0, time1, boxRight))
-		ASSERT(false, "No bounding box in bvh_node constructor\n");
+	if (!m_Left->ConstructAABB(time0, time1, boxLeft) || !m_Right->ConstructAABB(time0, time1, boxRight))
+		ASSERT(false, "No bounding box in BVHNode constructor\n");
 
 	m_Box = boxLeft.Merge(boxRight);
 }
 
-bool BVHNode::Intersect(const Ray& ray, HitRecord& record) const 
+bool BVHNode::Intersect(const Ray& ray, float minLength, float maxLength, HitRecord& record) const
 {
-	if (!m_Box.Intersect(ray))
+	if (!m_Box.Intersect(ray, minLength, maxLength))
 		return false;
 
-	bool left = m_Left->Intersect(ray, record);
+	bool hitLeft = m_Left->Intersect(ray, minLength, maxLength, record);
+	bool hitRight = m_Right->Intersect(ray, minLength, hitLeft ? record.Distance : maxLength, record);
 
-	return left ? true : m_Right->Intersect(ray, record);
+	return hitLeft || hitRight;
 }
 
 bool BVHNode::ConstructAABB(float time0, float time1, AABB& outputBox) const
