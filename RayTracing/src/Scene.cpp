@@ -2,7 +2,7 @@
 
 #include "Objects/Sphere.h"
 #include "Objects/BVH.h"
-#include "Material.h"
+#include "Materials/Material.h"
 #include "Random.h"
 
 
@@ -22,18 +22,44 @@ void Scene::LoadSandBoxScene()
     Camera = ProjectionCamera(orientation, properties, 0.f, 1.f);
 
 
-    const auto& planeMaterial = std::make_shared<Lambertian>(glm::vec3(0.4f, 0.4f, 0.4f));
+    const auto& texture = std::make_shared<Lambertian>(std::make_shared<CheckerTexture>(glm::vec3(0.9f), glm::vec3(0.2f, 0.3f, 0.1f)));
     const auto& lambertianMaterial = std::make_shared<Lambertian>(glm::vec3(0.9f, 0.4f, 0.4f));
     const auto& dielectricMaterial = std::make_shared<Dielectric>(1.5f);
     const auto& metalMaterial = std::make_shared<Metal>(glm::vec3(0.8f, 0.8f, 0.2f));
 
     std::vector<std::shared_ptr<GameObject>> objects;
 
-    objects.push_back(std::make_shared<Sphere>(glm::vec3(0, -100.45f, 0), 100.f, planeMaterial));
+    objects.push_back(std::make_shared<Sphere>(glm::vec3(0, -100.45f, 0), 100.f, texture));
     //objects.push_back(std::make_shared<MovingSphere>(glm::vec3(0.f, 0.1f, -3), 0.f, glm::vec3(0.f, -0.1f, -3), 1.f, 0.25f, lambertianMaterial));
     objects.push_back(std::make_shared<Sphere>(glm::vec3(1.f, 0, -3), 0.5f, metalMaterial));
     objects.push_back(std::make_shared<Sphere>(glm::vec3(0.f, -0.f, -3), 0.5f, lambertianMaterial));
     objects.push_back(std::make_shared<Sphere>(glm::vec3(-1.f, 0, -3), 0.5f, dielectricMaterial));
+    Objects.Add(std::make_shared<BVHNode>(objects, 0, objects.size(), 0.f, 1.f));
+}
+
+
+void Scene::LoadPerlinNoiseScene()
+{
+    CameraOrientation orientation;
+    orientation.Position = { -2, 2, 3 };
+    orientation.LookAt = { 0, 0, -3 };
+    orientation.Up = { 0, 1, 0 };
+
+    CameraProps properties;
+    properties.AspectRatio = 16.f / 9.f;
+    properties.FOV = glm::radians(45.f);
+    properties.FocusDist = glm::length(orientation.Position - orientation.LookAt);
+    properties.LensRadius = 0.f;
+
+    Camera = ProjectionCamera(orientation, properties, 0.f, 1.f);
+
+    const auto& texture = std::make_shared<Lambertian>(std::make_shared<NoiseTexture>());
+
+    std::vector<std::shared_ptr<GameObject>> objects;
+
+    objects.push_back(std::make_shared<Sphere>(glm::vec3(0, -100.45f, 0), 100.f, texture));
+    objects.push_back(std::make_shared<Sphere>(glm::vec3(0.f, 1.f, -3), 1.5f, texture));
+
     Objects.Add(std::make_shared<BVHNode>(objects, 0, objects.size(), 0.f, 1.f));
 }
 

@@ -13,6 +13,7 @@ public:
 		: Camera(camera) {}
 
 	void LoadSandBoxScene();
+	void LoadPerlinNoiseScene();
 	void LoadSceneSpheres();
 
 public:

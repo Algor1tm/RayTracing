@@ -24,8 +24,8 @@ add_executable (RayTracing
 "src/Random.cpp"  
 "src/ProjectionCamera.h"
 "src/ProjectionCamera.cpp" 
-"src/Material.h" 
-"src/Material.cpp"
+"src/Materials/Material.h" 
+"src/Materials/Material.cpp"
 "src/Utils.h" 
 "src/ThreadPool.h"
 "src/Scene.cpp" 
@@ -38,7 +38,7 @@ add_executable (RayTracing
 "src/Objects/AABB.cpp" 
 "src/Objects/BVH.h"
 "src/Objects/BVH.cpp"
-)
+ "src/Materials/Texture.h" "src/Materials/Texture.cpp" "src/Materials/PerlinNoise.h" "src/Materials/PerlinNoise.cpp")
 
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)

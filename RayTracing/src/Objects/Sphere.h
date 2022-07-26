@@ -1,7 +1,7 @@
 #pragma once
 
 #include "GameObject.h"
-#include "Material.h"
+#include "Materials/Material.h"
 
 
 class Sphere : public GameObject
@@ -11,6 +11,9 @@ public:
 
 	bool Intersect(const Ray& ray, float minLength, float maxLength, HitRecord& record) const override;
 	bool ConstructAABB(float time0, float time1, AABB& outputBox) const override;
+
+private:
+	static glm::vec2 GetTexCoords(const glm::vec3& point);
 
 private:
 	glm::vec3 m_Center;

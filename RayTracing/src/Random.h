@@ -43,6 +43,11 @@ public:
 		return glm::vec3(Float(min, max), Float(min, max), Float(min, max));
 	}
 
+	inline static glm::ivec3 IVec3(int min, int max)
+	{
+		return glm::ivec3(Int(min, max), Int(min, max), Int(min, max));
+	}
+
 	inline static glm::vec3 InUnitSphere()
 	{
 		return glm::normalize(Vec3(-1.f, 1.f));

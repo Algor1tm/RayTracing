@@ -1,5 +1,7 @@
 #include "Sphere.h"
 
+#include <glm/gtc/constants.hpp>
+
 
 Sphere::Sphere(const glm::vec3& center, float radius, const std::shared_ptr<Material>& material)
 	: m_Radius(radius), m_Center(center), m_Material(material)
@@ -41,9 +43,10 @@ bool Sphere::Intersect(const Ray& ray, float minLength, float maxLength, HitReco
 	record.Distance = root;
 	record.Point = ray.At(root);
 	record.Normal = (record.Point - m_Center) / m_Radius;
-	record.ObjectMaterial = m_Material;
-
 	record.SetFaceNormal(ray);
+
+	record.ObjectMaterial = m_Material;
+	record.TexCoords = GetTexCoords(record.Point);
 
 	return true;
 }
@@ -54,6 +57,14 @@ bool Sphere::ConstructAABB(float time0, float time1, AABB& outputBox) const
 	return true;
 }
 
+glm::vec2 Sphere::GetTexCoords(const glm::vec3& point) 
+{
+	float theta = glm::atan(-point.y);
+	float phi = glm::atan(-point.z, point.x) + glm::pi<float>();
+
+	return glm::vec2(phi / 2 * glm::pi<float>(), theta / glm::pi<float>());
+}
+
 
 MovingSphere::MovingSphere(const glm::vec3& center0, float time0, const glm::vec3& center1,
 	float time1, float radius, const std::shared_ptr<Material>& material)
@@ -61,7 +72,6 @@ MovingSphere::MovingSphere(const glm::vec3& center0, float time0, const glm::vec
 {
 
 }
-
 
 bool MovingSphere::Intersect(const Ray& ray, float minLength, float maxLength, HitRecord& record) const
 {

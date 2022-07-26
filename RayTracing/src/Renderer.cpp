@@ -1,5 +1,5 @@
 #include "Renderer.h"
-#include "Material.h"
+#include "Materials/Material.h"
 #include "Random.h"
 
 
@@ -128,10 +128,10 @@ glm::vec4 Renderer::FragmentShader(glm::vec2 coord)
 		glm::vec3 skyColor = glm::mix(white, blue, 0.5f * (coord.y + 1));
 		color *= skyColor;
 
-		break;
+		return PostProcess(color);
 	}
 
-	return PostProcess(color);
+	return glm::vec4(0, 0, 0, 1);
 }
 
 glm::vec4 Renderer::PostProcess(const glm::vec3& color)

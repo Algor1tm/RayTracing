@@ -47,5 +47,6 @@ public:
 	glm::vec3 Normal;
 	bool Inside;
 	std::shared_ptr<Material> ObjectMaterial;
+	glm::vec2 TexCoords;
 };
 

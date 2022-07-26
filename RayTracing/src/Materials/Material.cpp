@@ -3,7 +3,13 @@
 
 
 Lambertian::Lambertian(const glm::vec3& color)
-	: m_Albedo(color)
+	: m_Albedo(std::make_shared<SolidColor>(color))
+{
+
+}
+
+Lambertian::Lambertian(const std::shared_ptr<Texture>& texture)
+	: m_Albedo(texture)
 {
 
 }
@@ -17,7 +23,7 @@ bool Lambertian::Scatter(const HitRecord& record, Ray& ray, glm::vec3& attenuati
 	if (IsNearZero(ray.Direction))
 		ray.Direction = record.Normal;
 
-	attenuation = m_Albedo;
+	attenuation = m_Albedo->Value(record.TexCoords, record.Point);
 	return true;
 }
 

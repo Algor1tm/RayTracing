@@ -27,13 +27,13 @@ class RayTracing : public Layer
 
 		RendererProps props;
 		props.ChildRaysCount = 12;
-		props.SamplesPerPixel = 20;
+		props.SamplesPerPixel = 32;
 		props.ThreadsCount = 5;//std::thread::hardware_concurrency();
 
 		Renderer::Init(props);
 
 		m_Scene = std::make_shared<Scene>();
-		m_Scene->LoadSandBoxScene();
+		m_Scene->LoadPerlinNoiseScene();
 	}
 
 	void OnDetach() override

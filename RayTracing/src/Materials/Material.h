@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Objects/Ray.h"
+#include "Texture.h"
 
 
 class Material
@@ -14,11 +15,12 @@ class Lambertian: public Material
 {
 public:
 	Lambertian(const glm::vec3& color);
+	Lambertian(const std::shared_ptr<Texture>& texture);
 
 	bool Scatter(const HitRecord& record, Ray& ray, glm::vec3& attenuation) override;
 
 private:
-	glm::vec3 m_Albedo;
+	std::shared_ptr<Texture> m_Albedo;
 };
 
 
