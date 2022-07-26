@@ -41,7 +41,7 @@ void Scene::LoadSandBoxScene()
 void Scene::LoadPerlinNoiseScene()
 {
     CameraOrientation orientation;
-    orientation.Position = { -2, 2, 3 };
+    orientation.Position = { 8, 2, 3 };
     orientation.LookAt = { 0, 0, -3 };
     orientation.Up = { 0, 1, 0 };
 
@@ -53,12 +53,13 @@ void Scene::LoadPerlinNoiseScene()
 
     Camera = ProjectionCamera(orientation, properties, 0.f, 1.f);
 
-    const auto& texture = std::make_shared<Lambertian>(std::make_shared<NoiseTexture>());
+    const auto& perlin = std::make_shared<Lambertian>(std::make_shared<NoiseTexture>(4.f));
+    const auto& earth = std::make_shared<Lambertian>(std::make_shared<ImageTexture>("../../../../RayTracing/assets/earthmap.jpg"));
 
     std::vector<std::shared_ptr<GameObject>> objects;
 
-    objects.push_back(std::make_shared<Sphere>(glm::vec3(0, -100.45f, 0), 100.f, texture));
-    objects.push_back(std::make_shared<Sphere>(glm::vec3(0.f, 1.f, -3), 1.5f, texture));
+    objects.push_back(std::make_shared<Sphere>(glm::vec3(0, -100.45f, 0), 100.f, perlin));
+    objects.push_back(std::make_shared<Sphere>(glm::vec3(0.f, 1.f, -3), 1.5f, earth));
 
     Objects.Add(std::make_shared<BVHNode>(objects, 0, objects.size(), 0.f, 1.f));
 }

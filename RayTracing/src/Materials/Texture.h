@@ -3,6 +3,7 @@
 #include "PerlinNoise.h"
 
 #include <memory>
+#include <string>
 
 
 class Texture
@@ -43,9 +44,26 @@ class NoiseTexture : public Texture
 {
 public:
 	NoiseTexture() = default;
+	NoiseTexture(float scale);
 
 	glm::vec3 Value(glm::vec2 texCoords, const glm::vec3& point) const override;
 
 private:
 	Perlin m_Noise;
+	float m_Scale;
+};
+
+
+class ImageTexture: public Texture
+{
+public:
+	ImageTexture(const std::string& path);
+	~ImageTexture();
+
+	glm::vec3 Value(glm::vec2 texCoords, const glm::vec3& point) const override;
+
+private:
+	unsigned char* m_Data;
+	uint32_t m_Width, m_Height;
+	const int m_BytesPerPixel = 3;
 };

@@ -38,7 +38,12 @@ add_executable (RayTracing
 "src/Objects/AABB.cpp" 
 "src/Objects/BVH.h"
 "src/Objects/BVH.cpp"
- "src/Materials/Texture.h" "src/Materials/Texture.cpp" "src/Materials/PerlinNoise.h" "src/Materials/PerlinNoise.cpp")
+"src/Materials/Texture.h" 
+"src/Materials/Texture.cpp" 
+"src/Materials/PerlinNoise.h" 
+"src/Materials/PerlinNoise.cpp"
+"vendor/stb_image/stb_image.h"
+"vendor/stb_image/stb_image.cpp")
 
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)

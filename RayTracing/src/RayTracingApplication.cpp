@@ -12,17 +12,6 @@ class RayTracing : public Layer
 {
 	void OnAttach() override
 	{
-		// Make maximized window
-		GLFWwindow* window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
-		RECT workArea;
-		SystemParametersInfo(SPI_GETWORKAREA, 0, &workArea, 0);
-		glfwSetWindowPos(window, workArea.left, workArea.top);
-		glfwSetWindowSize(window, workArea.right - workArea.left, workArea.bottom - workArea.top);
-		
-		ImGuiIO& io = ImGui::GetIO(); (void)io;
-		io.IniFilename = NULL;
-		ImGui::LoadIniSettingsFromDisk("../../../../RayTracing/imgui.ini");
-
 		Random::Init();
 
 		RendererProps props;
@@ -34,6 +23,13 @@ class RayTracing : public Layer
 
 		m_Scene = std::make_shared<Scene>();
 		m_Scene->LoadPerlinNoiseScene();
+
+
+		MakeMaximizedWindow();
+
+		ImGuiIO& io = ImGui::GetIO(); (void)io;
+		io.IniFilename = NULL;
+		ImGui::LoadIniSettingsFromDisk("../../../../RayTracing/imgui.ini");
 	}
 
 	void OnDetach() override
@@ -105,6 +101,15 @@ private:
 	{
 		m_Scene->Camera.OnResize((float)m_ViewportWidth / (float)m_ViewportHeight);
 		Renderer::OnResize(m_ViewportWidth, m_ViewportHeight);
+	}
+
+	void MakeMaximizedWindow()
+	{
+		GLFWwindow* window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
+		RECT workArea;
+		SystemParametersInfo(SPI_GETWORKAREA, 0, &workArea, 0);
+		glfwSetWindowPos(window, workArea.left, workArea.top);
+		glfwSetWindowSize(window, workArea.right - workArea.left, workArea.bottom - workArea.top);
 	}
 
 private:
