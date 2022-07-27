@@ -53,8 +53,8 @@ void Scene::LoadPerlinNoiseScene()
 
     Camera = ProjectionCamera(orientation, properties, 0.f, 1.f);
 
-    const auto& perlin = std::make_shared<Lambertian>(std::make_shared<NoiseTexture>(4.f));
-    const auto& earth = std::make_shared<Lambertian>(std::make_shared<ImageTexture>("../../../../RayTracing/assets/earthmap.jpg"));
+    auto perlin = std::make_shared<Lambertian>(std::make_shared<NoiseTexture>(5.f));
+    auto earth = std::make_shared<Lambertian>(std::make_shared<ImageTexture>("../../../../RayTracing/assets/earthmap.jpg"));
 
     std::vector<std::shared_ptr<GameObject>> objects;
 

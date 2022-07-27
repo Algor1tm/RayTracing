@@ -56,11 +56,12 @@ ImageTexture::ImageTexture(const std::string& path)
 	unsigned char* data;
 	stbi_set_flip_vertically_on_load(1);
 
-	data = stbi_load(path.data(), &width, &height, &channels, 0);
+	data = stbi_load(path.data(), &width, &height, &channels, 3);
 	ASSERT(data, "Failed to load image texture!");
 	m_Width = width;
 	m_Height = height;
-	m_Data = data;
+	m_BytesPerPixel = channels;
+	m_Data = reinterpret_cast<uint8_t*>(data);
 }
 
 ImageTexture::~ImageTexture()
@@ -78,7 +79,7 @@ glm::vec3 ImageTexture::Value(glm::vec2 texCoords, const glm::vec3& point) const
 	if (j >= m_Height) j = m_Height - 1;
 
 	const float colorScale = 1.f / 255.f;
-	auto pixel = m_Data + j * m_Width * m_BytesPerPixel + i * m_BytesPerPixel;
+	uint8_t* pixel = m_Data + j * m_Width * m_BytesPerPixel + i * m_BytesPerPixel;
 
 	return glm::vec3(colorScale * pixel[0], colorScale * pixel[1], colorScale * pixel[2]);
 }

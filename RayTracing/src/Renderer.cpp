@@ -118,7 +118,7 @@ glm::vec4 Renderer::FragmentShader(glm::vec2 coord)
 		glm::vec3 attenuation;
 		if (m_Scene->Objects.Intersect(ray, Ray::MinLength, Ray::MaxLength, record))
 		{
-			if(!record.ObjectMaterial->Scatter(record, ray,attenuation))
+			if(!record.ObjectMaterial->Scatter(record, ray, attenuation))
 				return glm::vec4(0, 0, 0, 1);
 
 			color *= attenuation;

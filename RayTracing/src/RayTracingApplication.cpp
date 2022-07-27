@@ -16,7 +16,7 @@ class RayTracing : public Layer
 
 		RendererProps props;
 		props.ChildRaysCount = 12;
-		props.SamplesPerPixel = 32;
+		props.SamplesPerPixel = 20;
 		props.ThreadsCount = 5;//std::thread::hardware_concurrency();
 
 		Renderer::Init(props);

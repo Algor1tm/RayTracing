@@ -46,7 +46,7 @@ bool Sphere::Intersect(const Ray& ray, float minLength, float maxLength, HitReco
 	record.SetFaceNormal(ray);
 
 	record.ObjectMaterial = m_Material;
-	record.TexCoords = GetTexCoords(record.Point);
+	record.TexCoords = GetTexCoords(record.Normal);
 
 	return true;
 }
@@ -59,10 +59,10 @@ bool Sphere::ConstructAABB(float time0, float time1, AABB& outputBox) const
 
 glm::vec2 Sphere::GetTexCoords(const glm::vec3& point) 
 {
-	float theta = glm::atan(-point.y);
+	float theta = glm::acos(-point.y);
 	float phi = glm::atan(-point.z, point.x) + glm::pi<float>();
 
-	return glm::vec2(phi / 2 * glm::pi<float>(), theta / glm::pi<float>());
+	return glm::vec2(phi / (2 * glm::pi<float>()), theta / glm::pi<float>());
 }
 
 

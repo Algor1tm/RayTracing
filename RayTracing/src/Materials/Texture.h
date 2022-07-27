@@ -63,7 +63,7 @@ public:
 	glm::vec3 Value(glm::vec2 texCoords, const glm::vec3& point) const override;
 
 private:
-	unsigned char* m_Data;
+	uint8_t* m_Data;
 	uint32_t m_Width, m_Height;
-	const int m_BytesPerPixel = 3;
+	uint32_t m_BytesPerPixel = 3;
 };
