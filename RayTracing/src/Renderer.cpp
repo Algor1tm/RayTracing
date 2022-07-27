@@ -104,6 +104,9 @@ void Renderer::OnResize(uint32_t width, uint32_t height)
 	m_ImageData.resize(width * height);
 }
 
+#define RECURSIVE 1
+
+#if not RECURSIVE
 glm::vec4 Renderer::FragmentShader(glm::vec2 coord)
 {
 	Ray ray = m_Scene->Camera.CastRay(coord);
@@ -111,27 +114,65 @@ glm::vec4 Renderer::FragmentShader(glm::vec2 coord)
 	glm::vec3 color(1);
 
 	constexpr glm::vec3 white(1.f);
-	constexpr glm::vec3 blue(0.5f, 0.7f, 1.f);
+	constexpr glm::vec3 background(0.f, 0.f, 0.f);
 
 	for (uint32_t i = 0; i < m_RendererProps.ChildRaysCount; ++i)
 	{
-		glm::vec3 attenuation;
 		if (m_Scene->Objects.Intersect(ray, Ray::MinLength, Ray::MaxLength, record))
 		{
-			if(!record.ObjectMaterial->Scatter(record, ray, attenuation))
-				return glm::vec4(0, 0, 0, 1);
+			glm::vec3 emitted = record.ObjectMaterial->Emitted(record.TexCoords, record.Point);
+			glm::vec3 attenuation;
 
-			color *= attenuation;
+			if (!record.ObjectMaterial->Scatter(record, ray, attenuation))
+			{
+				return PostProcess(color * emitted);
+				//color = emitted + background * color;
+				//return PostProcess(color);
+			}
+
+			color = emitted + attenuation * color;
 			continue;
 		}
-
-		glm::vec3 skyColor = glm::mix(white, blue, 0.5f * (coord.y + 1));
+		
+		glm::vec3 skyColor = background;//glm::mix(white, blue, 0.5f * (coord.y + 1));
 		color *= skyColor;
 
 		return PostProcess(color);
 	}
 
 	return glm::vec4(0, 0, 0, 1);
+}
+
+#else 
+
+glm::vec4 Renderer::FragmentShader(glm::vec2 coord)
+{
+	Ray ray = m_Scene->Camera.CastRay(coord);
+	
+	glm::vec3 color = RayColor(ray, m_RendererProps.ChildRaysCount);
+
+	return PostProcess(color);
+}
+
+#endif
+
+glm::vec3 Renderer::RayColor(const Ray& ray, uint32_t depth)
+{
+	if (depth <= 0)
+		return glm::vec3(0);
+
+	HitRecord record;
+	if (!m_Scene->Objects.Intersect(ray, Ray::MinLength, Ray::MaxLength, record))
+		return m_Scene->Background;
+
+	glm::vec3 emitted = record.ObjectMaterial->Emitted(record.TexCoords, record.Point);
+	glm::vec3 attenuation;
+
+	Ray scattered = ray;
+	if (!record.ObjectMaterial->Scatter(record, scattered, attenuation))
+		return emitted;
+
+	return emitted + attenuation * RayColor(scattered, depth - 1);
 }
 
 glm::vec4 Renderer::PostProcess(const glm::vec3& color)

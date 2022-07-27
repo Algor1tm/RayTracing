@@ -14,9 +14,11 @@ public:
 
 	void LoadSandBoxScene();
 	void LoadPerlinNoiseScene();
+	void LoadCornellBoxScene();
 	void LoadSceneSpheres();
 
 public:
 	ProjectionCamera Camera;
 	GameObjectList Objects;
+	glm::vec3 Background;
 };

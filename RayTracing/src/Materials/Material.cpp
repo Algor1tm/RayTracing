@@ -3,18 +3,12 @@
 
 
 Lambertian::Lambertian(const glm::vec3& color)
-	: m_Albedo(std::make_shared<SolidColor>(color))
-{
-
-}
+	: m_Albedo(std::make_shared<SolidColor>(color)) {}
 
 Lambertian::Lambertian(const std::shared_ptr<Texture>& texture)
-	: m_Albedo(texture)
-{
+	: m_Albedo(texture) {}
 
-}
-
-bool Lambertian::Scatter(const HitRecord& record, Ray& ray, glm::vec3& attenuation)
+bool Lambertian::Scatter(const HitRecord& record, Ray& ray, glm::vec3& attenuation) const
 {
 	ray.Origin = record.Point;
 		
@@ -34,7 +28,7 @@ Metal::Metal(const glm::vec3& color, float fuzziness)
 	
 }
 
-bool Metal::Scatter(const HitRecord& record, Ray& ray, glm::vec3& attenuation)
+bool Metal::Scatter(const HitRecord& record, Ray& ray, glm::vec3& attenuation) const
 {
 	ray.Origin = record.Point;
 
@@ -48,12 +42,9 @@ bool Metal::Scatter(const HitRecord& record, Ray& ray, glm::vec3& attenuation)
 
 
 Dielectric::Dielectric(float refractionIndex)
-	: m_RefractionIndex(refractionIndex)
-{
+	: m_RefractionIndex(refractionIndex) {}
 
-}
-
-bool Dielectric::Scatter(const HitRecord& record, Ray& ray, glm::vec3& attenuation)
+bool Dielectric::Scatter(const HitRecord& record, Ray& ray, glm::vec3& attenuation) const
 {
 	constexpr glm::vec3 white(1.f);
 
@@ -75,9 +66,26 @@ bool Dielectric::Scatter(const HitRecord& record, Ray& ray, glm::vec3& attenuati
 	return true;
 }
 
-float Dielectric::Reflectance(float cosine, float refIndex)
+float Dielectric::Reflectance(float cosine, float refIndex) const
 {
 	float r0 = (1 - refIndex) / (1 + refIndex);
 	r0 = r0 * r0;
 	return r0 + (1 - r0) * pow((1 - cosine), 5);
+}
+
+
+DiffuseLight::DiffuseLight(const glm::vec3& color)
+	: DiffuseLight(std::make_shared<SolidColor>(color)) {}
+
+DiffuseLight::DiffuseLight(const std::shared_ptr<Texture>& texture)
+	: m_Emit(texture) {}
+
+glm::vec3 DiffuseLight::Emitted(glm::vec2 texCoords, const glm::vec3& point) const
+{
+	return m_Emit->Value(texCoords, point);
+}
+
+bool DiffuseLight::Scatter(const HitRecord& record, Ray& ray, glm::vec3& attenuation) const
+{
+	return false;
 }

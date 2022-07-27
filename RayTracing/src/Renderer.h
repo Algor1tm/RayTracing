@@ -45,6 +45,7 @@ private:
 	static void RenderRange(const std::shared_ptr<Scene>& scene, uint32_t startRow, uint32_t endRow);
 
 	static glm::vec4 FragmentShader(glm::vec2 coord);
+	static glm::vec3 RayColor(const Ray& ray, uint32_t depth);
 	static glm::vec4 PostProcess(const glm::vec3& color);
 
 private:

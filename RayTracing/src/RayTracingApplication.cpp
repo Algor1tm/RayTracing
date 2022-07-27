@@ -15,14 +15,14 @@ class RayTracing : public Layer
 		Random::Init();
 
 		RendererProps props;
-		props.ChildRaysCount = 12;
+		props.ChildRaysCount = 50;
 		props.SamplesPerPixel = 20;
 		props.ThreadsCount = 5;//std::thread::hardware_concurrency();
 
 		Renderer::Init(props);
 
 		m_Scene = std::make_shared<Scene>();
-		m_Scene->LoadPerlinNoiseScene();
+		m_Scene->LoadCornellBoxScene();
 
 
 		MakeMaximizedWindow();
