@@ -45,7 +45,7 @@ add_executable (RayTracing
 "vendor/stb_image/stb_image.h"
 "vendor/stb_image/stb_image.cpp" 
 "src/Objects/Rect.h"
-"src/Objects/Rect.cpp")
+"src/Objects/Rect.cpp" "src/Objects/Box.h" "src/Objects/Box.cpp" "src/Objects/Instances.h" "src/Objects/Instances.cpp" "src/Objects/ConstantMedium.h" "src/Objects/ConstantMedium.cpp")
 
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)

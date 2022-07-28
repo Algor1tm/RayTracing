@@ -65,3 +65,16 @@ public:
 private:
 	std::shared_ptr<Texture> m_Emit;
 };
+
+
+class Isotropic: public Material
+{
+public:
+	Isotropic(const glm::vec3& color);
+	Isotropic(const std::shared_ptr<Texture>& texture);
+	
+	bool Scatter(const HitRecord& record, Ray& ray, glm::vec3& attenuation) const override;
+
+private:
+	std::shared_ptr<Texture> m_Albedo;
+};

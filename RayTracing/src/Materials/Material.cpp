@@ -3,10 +3,16 @@
 
 
 Lambertian::Lambertian(const glm::vec3& color)
-	: m_Albedo(std::make_shared<SolidColor>(color)) {}
+	: m_Albedo(std::make_shared<SolidColor>(color)) 
+{
+
+}
 
 Lambertian::Lambertian(const std::shared_ptr<Texture>& texture)
-	: m_Albedo(texture) {}
+	: m_Albedo(texture) 
+{
+
+}
 
 bool Lambertian::Scatter(const HitRecord& record, Ray& ray, glm::vec3& attenuation) const
 {
@@ -42,7 +48,10 @@ bool Metal::Scatter(const HitRecord& record, Ray& ray, glm::vec3& attenuation) c
 
 
 Dielectric::Dielectric(float refractionIndex)
-	: m_RefractionIndex(refractionIndex) {}
+	: m_RefractionIndex(refractionIndex) 
+{
+
+}
 
 bool Dielectric::Scatter(const HitRecord& record, Ray& ray, glm::vec3& attenuation) const
 {
@@ -74,11 +83,17 @@ float Dielectric::Reflectance(float cosine, float refIndex) const
 }
 
 
-DiffuseLight::DiffuseLight(const glm::vec3& color)
-	: DiffuseLight(std::make_shared<SolidColor>(color)) {}
+DiffuseLight::DiffuseLight(const glm::vec3& color)	
+	: DiffuseLight(std::make_shared<SolidColor>(color)) 
+{
+
+}
 
 DiffuseLight::DiffuseLight(const std::shared_ptr<Texture>& texture)
-	: m_Emit(texture) {}
+	: m_Emit(texture) 
+{
+
+}
 
 glm::vec3 DiffuseLight::Emitted(glm::vec2 texCoords, const glm::vec3& point) const
 {
@@ -88,4 +103,24 @@ glm::vec3 DiffuseLight::Emitted(glm::vec2 texCoords, const glm::vec3& point) con
 bool DiffuseLight::Scatter(const HitRecord& record, Ray& ray, glm::vec3& attenuation) const
 {
 	return false;
+}
+
+
+Isotropic::Isotropic(const glm::vec3& color)
+	: m_Albedo(std::make_shared<SolidColor>(color))
+{
+
+}
+
+Isotropic::Isotropic(const std::shared_ptr<Texture>& texture)
+	: m_Albedo(texture)
+{
+
+}
+
+bool Isotropic::Scatter(const HitRecord& record, Ray& ray, glm::vec3& attenuation) const
+{
+	ray = Ray(Random::InUnitSphere(), record.Point, ray.Time);
+	attenuation = m_Albedo->Value(record.TexCoords, record.Point);
+	return true;
 }

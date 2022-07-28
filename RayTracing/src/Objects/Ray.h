@@ -1,10 +1,11 @@
 #pragma once
 
+#include "Utils.h"
+
 #include <glm/glm.hpp>
 
 #include <memory>
 #include <vector>
-
 
 //defines in src/Material.h
 class Material;
@@ -28,7 +29,7 @@ public:
 
 public:
 	static constexpr float MinLength = 0.001f;
-	static constexpr float MaxLength = 1000.f;
+	static constexpr float MaxLength = Infinity();
 };
 
 

@@ -3,6 +3,9 @@
 #include "Objects/Sphere.h"
 #include "Objects/BVH.h"
 #include "Objects/Rect.h"
+#include "Objects/Box.h"
+#include "Objects/Instances.h"
+#include "Objects/ConstantMedium.h"
 #include "Materials/Material.h"
 #include "Random.h"
 
@@ -10,7 +13,7 @@
 void Scene::LoadSandBoxScene()
 {
     CameraOrientation orientation;
-    orientation.Position = { 0, 0, 1 };
+    orientation.Position = { 0, 2, -1 };
     orientation.LookAt = { 0, 0, -3 };
     orientation.Up = { 0, 1, 0 };
 
@@ -24,18 +27,27 @@ void Scene::LoadSandBoxScene()
 
     Background = glm::vec3(0.5f, 0.7f, 1.f);
 
-    const auto& texture = std::make_shared<Lambertian>(std::make_shared<CheckerTexture>(glm::vec3(0.9f), glm::vec3(0.2f, 0.3f, 0.1f)));
-    const auto& lambertianMaterial = std::make_shared<Lambertian>(glm::vec3(0.9f, 0.4f, 0.4f));
-    const auto& dielectricMaterial = std::make_shared<Dielectric>(1.5f);
-    const auto& metalMaterial = std::make_shared<Metal>(glm::vec3(0.8f, 0.8f, 0.2f));
+    auto texture = std::make_shared<Lambertian>(std::make_shared<CheckerTexture>(glm::vec3(0.9f), glm::vec3(0.2f, 0.3f, 0.1f)));
+    auto lambertianMaterial = std::make_shared<Lambertian>(glm::vec3(0.9f, 0.4f, 0.4f));
+    auto dielectricMaterial = std::make_shared<Dielectric>(2.f);
+    auto metalMaterial = std::make_shared<Metal>(glm::vec3(0.8f, 0.8f, 0.2f));
 
     std::vector<std::shared_ptr<GameObject>> objects;
 
     objects.push_back(std::make_shared<Sphere>(glm::vec3(0, -100.45f, 0), 100.f, texture));
     //objects.push_back(std::make_shared<MovingSphere>(glm::vec3(0.f, 0.1f, -3), 0.f, glm::vec3(0.f, -0.1f, -3), 1.f, 0.25f, lambertianMaterial));
-    objects.push_back(std::make_shared<Sphere>(glm::vec3(1.f, 0, -3), 0.5f, metalMaterial));
-    objects.push_back(std::make_shared<Sphere>(glm::vec3(0.f, -0.f, -3), 0.5f, lambertianMaterial));
-    objects.push_back(std::make_shared<Sphere>(glm::vec3(-1.f, 0, -3), 0.5f, dielectricMaterial));
+    objects.push_back(std::make_shared<Sphere>(glm::vec3(1.3f, 0, -3), 0.5f, metalMaterial));
+    objects.push_back(std::make_shared<Sphere>(glm::vec3(-0.3f, -0.f, -5), 0.5f, lambertianMaterial));
+    objects.push_back(std::make_shared<Sphere>(glm::vec3(-1.3f, 0, -3), 0.5f, dielectricMaterial));
+
+    auto box = std::make_shared<Box>(glm::vec3(-0.4f, -0.4f, -3.4f), glm::vec3(0.4f, 0.4f, -2.6f), metalMaterial);
+    //std::shared_ptr<GameObject> box = std::make_shared<Box>(glm::vec3(0.f), glm::vec3(0.8f, 0.8f, 0.8f), lambertianMaterial);
+    //box = std::make_shared<RotateY>(box, glm::radians(45.f));
+    //box = std::make_shared<Translate>(box, glm::vec3(-0.4f, -0.4f, -3.4f));
+    // 
+    //objects.push_back(std::make_shared<ConstantMedium>(box, 2.f, glm::vec3(1.f)));
+    objects.push_back(box);
+
     Objects.Add(std::make_shared<BVHNode>(objects, 0, objects.size(), 0.f, 1.f));
 }
 
@@ -55,11 +67,11 @@ void Scene::LoadPerlinNoiseScene()
 
     Camera = ProjectionCamera(orientation, properties, 0.f, 1.f);
 
-    Background = glm::vec3(0);
+    Background = glm::vec3(0.f);
 
     auto perlin = std::make_shared<Lambertian>(std::make_shared<NoiseTexture>(10.f));
     auto earth = std::make_shared<Lambertian>(std::make_shared<ImageTexture>("../../../../RayTracing/assets/earthmap.jpg"));
-    auto diffLight = std::make_shared<DiffuseLight>(glm::vec3(10.f));
+    auto diffLight = std::make_shared<DiffuseLight>(glm::vec3(1.f));
 
     std::vector<std::shared_ptr<GameObject>> objects;
 
@@ -74,7 +86,7 @@ void Scene::LoadPerlinNoiseScene()
 void Scene::LoadCornellBoxScene()
 {
     CameraOrientation orientation;
-    orientation.Position = { 278, 278.f, -760 };
+    orientation.Position = { 278, 278, -760 };
     orientation.LookAt = { 278, 278, 0 };
     orientation.Up = { 0, 1, 0 };
 
@@ -86,21 +98,31 @@ void Scene::LoadCornellBoxScene()
 
     Camera = ProjectionCamera(orientation, properties, 0.f, 1.f);
 
-    Background = glm::vec3(0.8f);
+    Background = glm::vec3(0.1f);
 
     GameObjectList objects;
 
     auto red = std::make_shared<Lambertian>(glm::vec3(0.65f, 0.05f, 0.05f));
     auto white = std::make_shared<Lambertian>(glm::vec3(0.73f, 0.73f, 0.73f));
     auto green = std::make_shared<Lambertian>(glm::vec3(0.12f, 0.45f, 0.15f));
-    auto light = std::make_shared<DiffuseLight>(glm::vec3(100));
+    auto light = std::make_shared<DiffuseLight>(glm::vec3(1.f));
 
-    objects.Add(std::make_shared<RectYZ>(0, 555, 0, 555, 555, green));
-    objects.Add(std::make_shared<RectYZ>(0, 555, 0, 555, 0, red));
-    objects.Add(std::make_shared<RectXZ>(213, 343, 227, 332, 554, light));
-    objects.Add(std::make_shared<RectXZ>(0, 555, 0, 555, 0, white));
-    objects.Add(std::make_shared<RectXZ>(0, 555, 0, 555, 555, white));
-    objects.Add(std::make_shared<RectXY>(0, 555, 0, 555, 555, white));
+    objects.Add(std::make_shared<RectYZ>(-350.f, 905.f, 0.f, 1500.f, 765.f, green));
+    objects.Add(std::make_shared<RectYZ>(-350.f, 905.f, 0.f, 1500.f, -210.f, red));
+    objects.Add(std::make_shared<RectXZ>(100.f, 550.f, 100.f, 550.f, 554.f, light));
+    objects.Add(std::make_shared<RectXZ>(-440.f, 995.f, 0.f, 830.f, 0.f, white));
+    objects.Add(std::make_shared<RectXZ>(-440.f, 995.f, 0.f, 830.f, 555.f, white));
+    objects.Add(std::make_shared<RectXY>(-210.f, 765.f, -55.f, 610.f, 1100.f, white));
+
+    const auto& dielectricMaterial = std::make_shared<Dielectric>(1.5f);
+    objects.Add(std::make_shared<Sphere>(glm::vec3(225.f, 100.f, 300.f), 100.f, dielectricMaterial));
+
+    //objects.Add(std::make_shared<RectYZ>(0, 555, 0, 555, 555, green));
+    //objects.Add(std::make_shared<RectYZ>(0, 555, 0, 555, 0, red));
+    //objects.Add(std::make_shared<RectXZ>(213, 343, 227, 332, 554, light));
+    //objects.Add(std::make_shared<RectXZ>(0, 555, 0, 555, 0, white));
+    //objects.Add(std::make_shared<RectXZ>(0, 555, 0, 555, 555, white));
+    //objects.Add(std::make_shared<RectXY>(0, 555, 0, 555, 555, white));
 
     Objects.Add(std::make_shared<BVHNode>(objects, 0.f, 1.f));
 }

@@ -2,6 +2,8 @@
 
 #include <glm/glm.hpp>
 
+#include <limits>
+
 
 #define EPSILON 1e-6f
 
@@ -17,4 +19,9 @@ constexpr uint32_t RGBAtoHEX(const glm::vec4& color)
 		((uint32_t(color.b * 255) & 0xff) << 16) +
 		((uint32_t(color.g * 255) & 0xff) << 8) +
 		((uint32_t(color.r * 255)) & 0xff);
+}
+
+constexpr float Infinity()
+{
+	return std::numeric_limits<float>::infinity();
 }
