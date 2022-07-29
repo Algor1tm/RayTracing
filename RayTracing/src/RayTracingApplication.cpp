@@ -15,14 +15,14 @@ class RayTracing : public Layer
 		Random::Init();
 
 		RendererProps props;
-		props.ChildRaysCount = 50;
-		props.SamplesPerPixel = 200;
-		props.ThreadsCount = 5;//std::thread::hardware_concurrency();
+		props.ChildRaysCount = 30;
+		props.SamplesPerPixel = 100;
+		props.ThreadsCount = std::thread::hardware_concurrency() - 1;
 
 		Renderer::Init(props);
 
 		m_Scene = std::make_shared<Scene>();
-		m_Scene->LoadSandBoxScene();
+		m_Scene->LoadCornellBoxScene();
 
 
 		MakeMaximizedWindow();

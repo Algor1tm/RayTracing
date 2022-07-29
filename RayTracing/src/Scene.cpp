@@ -13,7 +13,7 @@
 void Scene::LoadSandBoxScene()
 {
     CameraOrientation orientation;
-    orientation.Position = { 0, 2, -1 };
+    orientation.Position = { 0, 0, 1 };
     orientation.LookAt = { 0, 0, -3 };
     orientation.Up = { 0, 1, 0 };
 
@@ -40,13 +40,12 @@ void Scene::LoadSandBoxScene()
     objects.push_back(std::make_shared<Sphere>(glm::vec3(-0.3f, -0.f, -5), 0.5f, lambertianMaterial));
     objects.push_back(std::make_shared<Sphere>(glm::vec3(-1.3f, 0, -3), 0.5f, dielectricMaterial));
 
-    auto box = std::make_shared<Box>(glm::vec3(-0.4f, -0.4f, -3.4f), glm::vec3(0.4f, 0.4f, -2.6f), metalMaterial);
-    //std::shared_ptr<GameObject> box = std::make_shared<Box>(glm::vec3(0.f), glm::vec3(0.8f, 0.8f, 0.8f), lambertianMaterial);
-    //box = std::make_shared<RotateY>(box, glm::radians(45.f));
-    //box = std::make_shared<Translate>(box, glm::vec3(-0.4f, -0.4f, -3.4f));
-    // 
-    //objects.push_back(std::make_shared<ConstantMedium>(box, 2.f, glm::vec3(1.f)));
-    objects.push_back(box);
+    std::shared_ptr<GameObject> box = std::make_shared<Box>(glm::vec3(0.f), glm::vec3(0.8f, 0.8f, 0.8f), lambertianMaterial);
+    box = std::make_shared<RotateY>(box, glm::radians(45.f));
+    box = std::make_shared<Translate>(box, glm::vec3(-0.4f, -0.4f, -3.4f));
+
+    objects.push_back(std::make_shared<ConstantMedium>(box, 4.1f, glm::vec3(1.f)));
+    //objects.push_back(box);
 
     Objects.Add(std::make_shared<BVHNode>(objects, 0, objects.size(), 0.f, 1.f));
 }
@@ -55,8 +54,8 @@ void Scene::LoadSandBoxScene()
 void Scene::LoadPerlinNoiseScene()
 {
     CameraOrientation orientation;
-    orientation.Position = { 23.f, 3.f, 6 };
-    orientation.LookAt = { 0, 2, 0 };
+    orientation.Position = { 0.f, 3.f, 6 };
+    orientation.LookAt = { 0, 0, -10 };
     orientation.Up = { 0, 1, 0 };
 
     CameraProps properties;
@@ -67,18 +66,19 @@ void Scene::LoadPerlinNoiseScene()
 
     Camera = ProjectionCamera(orientation, properties, 0.f, 1.f);
 
-    Background = glm::vec3(0.f);
+    Background = glm::vec3(0.5f, 0.7f, 1.f);
+    //Background = glm::vec3(0.f);
 
-    auto perlin = std::make_shared<Lambertian>(std::make_shared<NoiseTexture>(10.f));
+    auto perlin = std::make_shared<Lambertian>(std::make_shared<NoiseTexture>(4.f));
     auto earth = std::make_shared<Lambertian>(std::make_shared<ImageTexture>("../../../../RayTracing/assets/earthmap.jpg"));
     auto diffLight = std::make_shared<DiffuseLight>(glm::vec3(1.f));
 
     std::vector<std::shared_ptr<GameObject>> objects;
 
     objects.push_back(std::make_shared<Sphere>(glm::vec3(0, -1000.0f, 0), 1000.f, perlin));
-    objects.push_back(std::make_shared<Sphere>(glm::vec3(0.f, 1.f, 0), 1.f, earth));
-    objects.push_back(std::make_shared<RectXY>(2.f, 6.f, 1.f, 3.f, -3.f, diffLight));
-    objects.push_back(std::make_shared<Sphere>(glm::vec3(0.f, 3.f, 0), 1.f, diffLight));
+
+    objects.push_back(std::make_shared<Sphere>(glm::vec3(0.f, 1.f, -5), 0.5f, earth));
+    objects.push_back(std::make_shared<RectYZ>(0.f, 1.f, 1.f, -3.f, 0.f, diffLight));
 
     Objects.Add(std::make_shared<BVHNode>(objects, 0, objects.size(), 0.f, 1.f));
 }
@@ -98,7 +98,7 @@ void Scene::LoadCornellBoxScene()
 
     Camera = ProjectionCamera(orientation, properties, 0.f, 1.f);
 
-    Background = glm::vec3(0.1f);
+    Background = glm::vec3(0.2f);
 
     GameObjectList objects;
 
@@ -107,27 +107,103 @@ void Scene::LoadCornellBoxScene()
     auto green = std::make_shared<Lambertian>(glm::vec3(0.12f, 0.45f, 0.15f));
     auto light = std::make_shared<DiffuseLight>(glm::vec3(1.f));
 
-    objects.Add(std::make_shared<RectYZ>(-350.f, 905.f, 0.f, 1500.f, 765.f, green));
-    objects.Add(std::make_shared<RectYZ>(-350.f, 905.f, 0.f, 1500.f, -210.f, red));
-    objects.Add(std::make_shared<RectXZ>(100.f, 550.f, 100.f, 550.f, 554.f, light));
-    objects.Add(std::make_shared<RectXZ>(-440.f, 995.f, 0.f, 830.f, 0.f, white));
+    objects.Add(std::make_shared<RectYZ>(-350.f, 905.f, -500.f, 1500.f, 765.f, green));
+    objects.Add(std::make_shared<RectYZ>(-350.f, 905.f, -500.f, 1500.f, -210.f, red));
+    objects.Add(std::make_shared<RectXZ>( 100.f, 450.f, 180.f, 550.f, 554.f, light));
+    objects.Add(std::make_shared<RectXZ>(-440.f, 995.f, -500.f, 830.f, 0.f, white));
     objects.Add(std::make_shared<RectXZ>(-440.f, 995.f, 0.f, 830.f, 555.f, white));
-    objects.Add(std::make_shared<RectXY>(-210.f, 765.f, -55.f, 610.f, 1100.f, white));
+    objects.Add(std::make_shared<RectXY>(-210.f, 765.f, -55.f, 610.f, 750.f, white));
 
-    const auto& dielectricMaterial = std::make_shared<Dielectric>(1.5f);
-    objects.Add(std::make_shared<Sphere>(glm::vec3(225.f, 100.f, 300.f), 100.f, dielectricMaterial));
+    auto dielectric = std::make_shared<Dielectric>(1.5f);
+    objects.Add(std::make_shared<Sphere>(glm::vec3(150.f, 80.f, 125.f), 80.f, dielectric));
 
-    //objects.Add(std::make_shared<RectYZ>(0, 555, 0, 555, 555, green));
-    //objects.Add(std::make_shared<RectYZ>(0, 555, 0, 555, 0, red));
-    //objects.Add(std::make_shared<RectXZ>(213, 343, 227, 332, 554, light));
-    //objects.Add(std::make_shared<RectXZ>(0, 555, 0, 555, 0, white));
-    //objects.Add(std::make_shared<RectXZ>(0, 555, 0, 555, 555, white));
-    //objects.Add(std::make_shared<RectXY>(0, 555, 0, 555, 555, white));
+    auto metal = std::make_shared<Dielectric>(10.f);
+    std::shared_ptr<GameObject> box = std::make_shared<Box>(glm::vec3(0.f), glm::vec3(175.f, 300.f, 175.f), metal);
+    box = std::make_shared<RotateY>(box, glm::radians(30.f));
+    box = std::make_shared<Translate>(box, glm::vec3(370.f, 0.f, 350.f));
+    objects.Add(box);
 
     Objects.Add(std::make_shared<BVHNode>(objects, 0.f, 1.f));
 }
 
-void Scene::LoadSceneSpheres()
+void Scene::LoadFinalScene()
+{
+    CameraOrientation orientation;
+    orientation.Position = { 478, 278, -600 };
+    orientation.LookAt = { 278, 278, 0 };
+    orientation.Up = { 0, 1, 0 };
+
+    CameraProps properties;
+    properties.AspectRatio = 16.f / 9.f;
+    properties.FOV = glm::radians(40.f);
+    properties.FocusDist = glm::length(orientation.Position - orientation.LookAt);
+    properties.LensRadius = 0.f;
+
+    Camera = ProjectionCamera(orientation, properties, 0.f, 1.f);
+
+    Background = glm::vec3(0.5f, 0.7f, 1.f);
+
+    GameObjectList boxes1;
+    auto ground = std::make_shared<Lambertian>(glm::vec3(0.48f, 0.83f, 0.53f));
+
+    const int boxes_per_side = 20;
+    for (int i = 0; i < boxes_per_side; i++) {
+        for (int j = 0; j < boxes_per_side; j++) {
+            float w = 100.f;
+            float x0 = -1000.f + i * w;
+            float z0 = -1000.f + j * w;
+            float y0 = 0.f;
+            float x1 = x0 + w;
+            float y1 = Random::Float(1, 101);
+            float z1 = z0 + w;
+
+            boxes1.Add(std::make_shared<Box>(glm::vec3(x0, y0, z0), glm::vec3(x1, y1, z1), ground));
+        }
+    }
+
+
+    Objects.Add(std::make_shared<BVHNode>(boxes1, 0, 1));
+
+    auto light = std::make_shared<DiffuseLight>(glm::vec3(1));
+    Objects.Add(std::make_shared<RectXZ>(123, 423, 147, 412, 554, light));
+
+    auto center1 = glm::vec3(400, 400, 200);
+    auto center2 = center1 + glm::vec3(30, 0, 0);
+    auto moving_sphere_material = std::make_shared<Lambertian>(glm::vec3(0.7f, 0.3f, 0.1f));
+    Objects.Add(make_shared<MovingSphere>(center1, 0.f, center2, 1.f, 50.f, moving_sphere_material));
+
+    Objects.Add(std::make_shared<Sphere>(glm::vec3(260, 150, 45), 50.f, std::make_shared<Dielectric>(1.5f)));
+    Objects.Add(std::make_shared<Sphere>(
+        glm::vec3(0, 150, 145), 50, std::make_shared<Metal>(glm::vec3(0.8f, 0.8f, 0.9f), 1.f)
+        ));
+
+    auto boundary = std::make_shared<Sphere>(glm::vec3(360, 150, 145), 70.f, std::make_shared<Dielectric>(1.5f));
+    Objects.Add(boundary);
+    Objects.Add(std::make_shared<ConstantMedium>(boundary, 0.2f, glm::vec3(0.2f, 0.4f, 0.9f)));
+    boundary = std::make_shared<Sphere>(glm::vec3(0), 5000.f, std::make_shared<Dielectric>(1.5f));
+    Objects.Add(std::make_shared<ConstantMedium>(boundary, .0001f, glm::vec3(1)));
+
+    auto emat = std::make_shared<Lambertian>(std::make_shared<ImageTexture>("../../../../RayTracing/assets/earthmap.jpg"));
+    Objects.Add(std::make_shared<Sphere>(glm::vec3(400, 200, 400), 100.f, emat));
+    auto pertext = std::make_shared<NoiseTexture>(0.1f);
+    Objects.Add(std::make_shared<Sphere>(glm::vec3(220, 280, 300), 80.f, std::make_shared<Lambertian>(pertext)));
+
+    GameObjectList boxes2;
+    auto white = std::make_shared<Lambertian>(glm::vec3(0.73f));
+    int count = 1000;
+    for (int j = 0; j < count; j++) {
+        boxes2.Add(std::make_shared<Sphere>(Random::Vec3(0, 165), 10, white));
+    }
+
+    Objects.Add(std::make_shared<Translate>(
+        std::make_shared<RotateY>(
+            std::make_shared<BVHNode>(boxes2, 0.f, 1.f), glm::radians(15.f)),
+        glm::vec3(-100, 270, 395)
+        )
+    );
+}
+
+void Scene::LoadSpheresScene()
 {
     CameraOrientation orientation;
     orientation.Position = { 13, 2, 3 };
@@ -144,8 +220,10 @@ void Scene::LoadSceneSpheres()
 
     Background = glm::vec3(0.5f, 0.7f, 1.f);
 
+    GameObjectList objects;
+
     auto ground_material = std::make_shared<Lambertian>(glm::vec3(0.5f));
-    Objects.Add(std::make_shared<Sphere>(glm::vec3(0.f, -1000.f, 0.f), 1000.f, ground_material));
+    objects.Add(std::make_shared<Sphere>(glm::vec3(0.f, -1000.f, 0.f), 1000.f, ground_material));
 
     for (int a = -11; a < 11; a++)
     {
@@ -163,7 +241,7 @@ void Scene::LoadSceneSpheres()
                     // diffuse
                     glm::vec3 albedo = Random::Vec3()* Random::Vec3();
                     sphere_material = std::make_shared<Lambertian>(albedo);
-                    Objects.Add(std::make_shared<Sphere>(center, 0.2f, sphere_material));
+                    objects.Add(std::make_shared<Sphere>(center, 0.2f, sphere_material));
                 }
                 else if (choose_mat < 0.95f)
                 {
@@ -171,25 +249,27 @@ void Scene::LoadSceneSpheres()
                     glm::vec3 albedo = Random::Vec3(0.5f, 1.f);
                     float fuzz = Random::Float(0.f, 0.5f);
                     sphere_material = std::make_shared<Metal>(albedo, fuzz);
-                    Objects.Add(std::make_shared<Sphere>(center, 0.2f, sphere_material));
+                    objects.Add(std::make_shared<Sphere>(center, 0.2f, sphere_material));
                 }
                 else 
                 {
                     // glass
                     sphere_material = std::make_shared<Dielectric>(1.5f);
-                    Objects.Add(std::make_shared<Sphere>(center, 0.2f, sphere_material));
+                    objects.Add(std::make_shared<Sphere>(center, 0.2f, sphere_material));
                 }
             }
         }
     }
 
     auto material1 = std::make_shared<Dielectric>(1.5f);
-    Objects.Add(std::make_shared<Sphere>(glm::vec3(0.f, 1.f, 0.f), 1.f, material1));
+    objects.Add(std::make_shared<Sphere>(glm::vec3(0.f, 1.f, 0.f), 1.f, material1));
 
     auto material2 = std::make_shared<Lambertian>(glm::vec3(0.4f, 0.2f, 0.1f));
-    Objects.Add(std::make_shared<Sphere>(glm::vec3(-4.f, 1.f, 0.f), 1.f, material2));
+    objects.Add(std::make_shared<Sphere>(glm::vec3(-4.f, 1.f, 0.f), 1.f, material2));
 
     auto material3 = std::make_shared<Metal>(glm::vec3(0.7f, 0.6f, 0.5f), 0.f);
-    Objects.Add(std::make_shared<Sphere>(glm::vec3(4.f, 1.f, 0.f), 1.f, material3));
+    objects.Add(std::make_shared<Sphere>(glm::vec3(4.f, 1.f, 0.f), 1.f, material3));
+
+    Objects.Add(std::make_shared<BVHNode>(objects, 0.f, 1.f));
 }
 

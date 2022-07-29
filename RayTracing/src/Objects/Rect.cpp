@@ -57,7 +57,7 @@ bool RectXZ::Intersect(const Ray& ray, float minLength, float maxLength, HitReco
 
 	record.Distance = dist;
 	record.Point = glm::vec3(rayAtX, m_y, rayAtZ);
-	record.Normal = glm::vec3(0, 0, 1);
+	record.Normal = glm::vec3(0, 1, 0);
 	record.SetFaceNormal(ray);
 
 	record.ObjectMaterial = m_Material;
@@ -92,7 +92,7 @@ bool RectYZ::Intersect(const Ray& ray, float minLength, float maxLength, HitReco
 
 	record.Distance = dist;
 	record.Point = glm::vec3(m_x, rayAtY, rayAtZ);
-	record.Normal = glm::vec3(0, 0, 1);
+	record.Normal = glm::vec3(1, 0, 0);
 	record.SetFaceNormal(ray);
 
 	record.ObjectMaterial = m_Material;

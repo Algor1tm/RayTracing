@@ -22,7 +22,7 @@ bool ConstantMedium::Intersect(const Ray& ray, float minLength, float maxLength,
 	if (!m_Boundaries->Intersect(ray, -Infinity(), Infinity(), rec1))
 		return false;
 
-	if (!m_Boundaries->Intersect(ray, record.Distance + 0.0001f, Infinity(), rec2))
+	if (!m_Boundaries->Intersect(ray, rec1.Distance + 0.0001f, Infinity(), rec2))
 		return false;
 
 	if (rec1.Distance < minLength) rec1.Distance = minLength;
@@ -31,12 +31,15 @@ bool ConstantMedium::Intersect(const Ray& ray, float minLength, float maxLength,
 	if (rec1.Distance >= rec2.Distance)
 		return false;
 
+	if (rec1.Distance < 0)
+		rec1.Distance = 0;
+
 	float rayLength = glm::length(ray.Direction);
-	float distanceInsideBoundary = (rec2.Distance - rec1.Distance) / rayLength;
+	float distanceInsideBoundary = (rec2.Distance - rec1.Distance) * rayLength;
 	float hitDistance = m_NegInvDensity * glm::log(Random::Float());
 
-	if (rec1.Distance < distanceInsideBoundary)
-		rec1.Distance = 0;
+	if (hitDistance > distanceInsideBoundary)
+		return false;
 
 	record.Distance = rec1.Distance + hitDistance / rayLength;
 	record.Point = ray.At(record.Distance);

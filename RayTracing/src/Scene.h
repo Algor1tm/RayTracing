@@ -15,7 +15,9 @@ public:
 	void LoadSandBoxScene();
 	void LoadPerlinNoiseScene();
 	void LoadCornellBoxScene();
-	void LoadSceneSpheres();
+	void LoadFinalScene();
+	void LoadSpheresScene();
+
 
 public:
 	ProjectionCamera Camera;

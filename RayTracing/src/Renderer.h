@@ -58,4 +58,5 @@ private:
 	static ThreadPool m_Pool;
 	static RendererState m_CurrentState;
 	static Time m_RenderTime;
+	static Timer m_Timer;
 };

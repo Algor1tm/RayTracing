@@ -12,6 +12,7 @@ RendererProps Renderer::m_RendererProps;
 ThreadPool Renderer::m_Pool;
 RendererState Renderer::m_CurrentState;
 Time Renderer::m_RenderTime;
+Timer Renderer::m_Timer;
 
 
 void Renderer::Init(const RendererProps& props)
@@ -37,7 +38,7 @@ void Renderer::Render(const std::shared_ptr<Scene>& scene)
 	
 	std::fill(begin(m_ImageData), end(m_ImageData), 0);
 
-	Timer rendererTimer;
+	m_Timer.Reset();
 
 	std::vector<std::future<void>> futures;
 	futures.reserve(m_RendererProps.ThreadsCount);
@@ -54,7 +55,7 @@ void Renderer::Render(const std::shared_ptr<Scene>& scene)
 
 	std::for_each(begin(futures), end(futures), [](const auto& future) { future.wait(); });
 
-	m_RenderTime = rendererTimer.ElapsedTime();
+	m_RenderTime = m_Timer.ElapsedTime();
 	m_CurrentState = RendererState::Nothing;
 }
 
@@ -78,6 +79,7 @@ void Renderer::RenderRange(const std::shared_ptr<Scene>& scene, uint32_t startRo
 
 			color /= m_RendererProps.SamplesPerPixel;
 			m_ImageData[index] = RGBAtoHEX(color);
+			m_RenderTime = m_Timer.ElapsedTime();
 		}
 	}
 }
