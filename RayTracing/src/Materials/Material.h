@@ -29,11 +29,12 @@ class Metal : public Material
 {
 public:
 	Metal(const glm::vec3& color, float fuzziness = 0);
+	Metal(const std::shared_ptr<Texture>& texture, float fuzziness = 0);
 
 	bool Scatter(const HitRecord& record, Ray& ray, glm::vec3& attenuation) const override;
 
 private:
-	glm::vec3 m_Albedo;
+	std::shared_ptr<Texture> m_Albedo;
 	float m_Fuzziness;
 };
 

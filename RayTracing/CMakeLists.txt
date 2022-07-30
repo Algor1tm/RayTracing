@@ -19,6 +19,7 @@ add_executable (RayTracing
 "src/Image.cpp" 
 "src/Renderer.h" 
 "src/Renderer.cpp" 
+"src/Scene.cpp" 
 "src/Scene.h"  
 "src/Random.h" 
 "src/Random.cpp"  
@@ -28,7 +29,6 @@ add_executable (RayTracing
 "src/Materials/Material.cpp"
 "src/Utils.h" 
 "src/ThreadPool.h"
-"src/Scene.cpp" 
 "src/Objects/Sphere.h"
 "src/Objects/Sphere.cpp"
 "src/Objects/GameObject.h"
@@ -45,7 +45,13 @@ add_executable (RayTracing
 "vendor/stb_image/stb_image.h"
 "vendor/stb_image/stb_image.cpp" 
 "src/Objects/Rect.h"
-"src/Objects/Rect.cpp" "src/Objects/Box.h" "src/Objects/Box.cpp" "src/Objects/Instances.h" "src/Objects/Instances.cpp" "src/Objects/ConstantMedium.h" "src/Objects/ConstantMedium.cpp")
+"src/Objects/Rect.cpp" 
+"src/Objects/Box.h"
+"src/Objects/Box.cpp" 
+"src/Objects/Instances.h"
+"src/Objects/Instances.cpp"
+"src/Objects/ConstantMedium.h"
+"src/Objects/ConstantMedium.cpp")
 
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)

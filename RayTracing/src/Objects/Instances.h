@@ -31,3 +31,18 @@ private:
 	AABB m_Box;
 	bool m_HasBox;
 };
+
+class RotateX : public GameObject
+{
+public:
+	RotateX(const std::shared_ptr<GameObject>& object, float rotation);
+
+	bool Intersect(const Ray& ray, float minLength, float maxLength, HitRecord& record) const override;
+	bool ConstructAABB(float time0, float time1, AABB& outputBox) const override;
+
+private:
+	std::shared_ptr<GameObject> m_Object;
+	float m_Sin, m_Cos;
+	AABB m_Box;
+	bool m_HasBox;
+};

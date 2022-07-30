@@ -29,9 +29,15 @@ bool Lambertian::Scatter(const HitRecord& record, Ray& ray, glm::vec3& attenuati
 
 
 Metal::Metal(const glm::vec3& color, float fuzziness)
-	: m_Albedo(color), m_Fuzziness(glm::clamp(fuzziness, 0.f, 1.f))
+	: m_Albedo(std::make_shared<SolidColor>(color)), m_Fuzziness(glm::clamp(fuzziness, 0.f, 1.f))
 {
 	
+}
+
+Metal::Metal(const std::shared_ptr<Texture>& texture, float fuzziness)
+	: m_Albedo(texture), m_Fuzziness(fuzziness)
+{
+
 }
 
 bool Metal::Scatter(const HitRecord& record, Ray& ray, glm::vec3& attenuation) const
@@ -42,8 +48,13 @@ bool Metal::Scatter(const HitRecord& record, Ray& ray, glm::vec3& attenuation) c
 	if(m_Fuzziness != 0)
 		ray.Direction += m_Fuzziness * Random::InUnitSphere();
 
-	attenuation = m_Albedo;
-	return glm::dot(ray.Direction, record.Normal) > 0;
+	if (glm::dot(ray.Direction, record.Normal) > 0)
+	{
+		attenuation = m_Albedo->Value(record.TexCoords, record.Point);
+		return true;
+	}
+
+	return false;
 }
 
 
